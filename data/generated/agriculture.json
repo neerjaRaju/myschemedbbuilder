@@ -1,0 +1,50 @@
+[
+  {
+    "id": "PMKISAN001",
+    "title": "PM-KISAN",
+    "ministry": "Ministry of Agriculture & Farmers Welfare",
+    "category": "Agriculture",
+    "state": "All India",
+    "description": "Income support of ₹6,000 per year to eligible farmer families.",
+    "benefits": [
+      "₹6,000 per year",
+      "Direct Benefit Transfer"
+    ],
+    "eligibility": [
+      "Eligible landholding farmer families"
+    ],
+    "documents": [
+      "Aadhaar",
+      "Bank Account",
+      "Land Records"
+    ],
+    "applicationProcess": "Apply through the official PM-KISAN portal or Common Service Centre.",
+    "officialUrl": "https://pmkisan.gov.in",
+    "helpline": "155261",
+    "lastUpdated": "2026-07-15T12:34:42.607638"
+  },
+  {
+    "id": "PMFBY001",
+    "title": "Pradhan Mantri Fasal Bima Yojana",
+    "ministry": "Ministry of Agriculture & Farmers Welfare",
+    "category": "Agriculture",
+    "state": "All India",
+    "description": "Crop insurance scheme for farmers against natural calamities.",
+    "benefits": [
+      "Crop insurance",
+      "Financial protection"
+    ],
+    "eligibility": [
+      "Eligible farmers"
+    ],
+    "documents": [
+      "Aadhaar",
+      "Bank Account",
+      "Land Records"
+    ],
+    "applicationProcess": "Apply through the official portal or participating banks.",
+    "officialUrl": "https://pmfby.gov.in",
+    "helpline": "",
+    "lastUpdated": "2026-07-15T12:34:42.608736"
+  }
+]
