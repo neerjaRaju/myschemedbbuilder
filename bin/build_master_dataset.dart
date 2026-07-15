@@ -1,95 +1,78 @@
-import 'dart:convert';
 import 'dart:io';
+import '../lib/models/scheme.dart';
+import '../lib/parser/json_parser.dart';
+import '../lib/validator/scheme_validator.dart';
+import '../lib/validator/duplicate_validator.dart';
 
-Future<void> main() async {
-  const generatedDir = 'data/generated';
-  const outputFile = 'data/processed/schemes_master.json';
+void main() {
+  final Directory generatedDir = Directory('data/generated');
+  final String masterOutputPath = 'data/processed/schemes_master.json';
 
-  final inputDirectory = Directory(generatedDir);
-
-  if (!inputDirectory.existsSync()) {
-    print('❌ Directory not found: $generatedDir');
+  if (!generatedDir.existsSync()) {
+    print('Error: Generated data directory "data/generated" does not exist.');
     exit(1);
   }
 
-  final jsonFiles = inputDirectory
-      .listSync()
-      .whereType<File>()
-      .where((file) => file.path.endsWith('.json'))
-      .toList()
-    ..sort((a, b) => a.path.compareTo(b.path));
+  print('==================================================');
+  print('Starting Master Dataset Compiler');
+  print('==================================================');
 
-  if (jsonFiles.isEmpty) {
-    print('❌ No JSON files found in $generatedDir');
-    exit(1);
-  }
+  final List<Scheme> allSchemes = [];
+  final List<String> errorLog = [];
+  final List<String> deduplicationLog = [];
 
-  print('======================================');
-  print('Government Scheme Dataset Builder');
-  print('======================================');
-  print('');
-
-  final Map<String, Map<String, dynamic>> schemes = {};
-
-  int totalRecords = 0;
-
-  for (final file in jsonFiles) {
-    print('Reading ${file.path}');
-
-    try {
-      final content = await file.readAsString();
-
-      final decoded = jsonDecode(content);
-
-      if (decoded is! List) {
-        print('Skipping ${file.path} (Not a JSON array)');
-        continue;
-      }
-
-      print('  ${decoded.length} records');
-
-      totalRecords += decoded.length;
-
-      for (final item in decoded) {
-        if (item is! Map<String, dynamic>) continue;
-
-        final id = (item['id'] ?? '').toString().trim();
-
-        if (id.isEmpty) continue;
-
-        // Latest entry wins
-        schemes[id] = item;
-      }
-    } catch (e) {
-      print('Failed: ${file.path}');
-      print(e);
+  // 1. Scan and parse all crawler outputs
+  final List<FileSystemEntity> files = generatedDir.listSync();
+  for (var file in files) {
+    if (file is File && file.path.endsWith('.json')) {
+      print('Reading generated file: ${file.path}');
+      final schemes = JsonParser.parseFile(file.path);
+      allSchemes.addAll(schemes);
     }
-
-    print('');
   }
 
-  final output = schemes.values.toList();
+  print('\nTotal raw records loaded: ${allSchemes.length}');
 
-  output.sort(
-    (a, b) => (a['title'] ?? '')
-        .toString()
-        .compareTo((b['title'] ?? '').toString()),
+  // 2. Schema validation
+  print('Validating records...');
+  final List<Scheme> validatedSchemes = [];
+  for (var scheme in allSchemes) {
+    if (SchemeValidator.isValid(scheme, errorLog)) {
+      validatedSchemes.add(scheme);
+    }
+  }
+
+  if (errorLog.isNotEmpty) {
+    print('Validation report (${errorLog.length} warnings/errors detected):');
+    errorLog.take(15).forEach((err) => print('  - $err'));
+    if (errorLog.length > 15)
+      print('  - ... and ${errorLog.length - 15} more.');
+  }
+
+  // 3. De-duplicate across different sources using our multi-criteria validator
+  print('\nDeduplicating and resolving similarities...');
+  final List<Scheme> uniqueSchemes = DuplicateValidator.deduplicate(
+    validatedSchemes,
+    deduplicationLog,
   );
 
-  final out = File(outputFile);
+  if (deduplicationLog.isNotEmpty) {
+    print(
+      'Deduplication actions log (${deduplicationLog.length} resolved collisions):',
+    );
+    deduplicationLog.take(10).forEach((log) => print('  - $log'));
+    if (deduplicationLog.length > 10)
+      print('  - ... and ${deduplicationLog.length - 10} more.');
+  }
 
-  await out.parent.create(recursive: true);
+  // 4. Sort deterministically by ID
+  uniqueSchemes.sort((a, b) => a.id.compareTo(b.id));
 
-  await out.writeAsString(
-    const JsonEncoder.withIndent('  ').convert(output),
+  // 5. Write to master output path
+  print(
+    '\nWriting master dataset containing ${uniqueSchemes.length} clean records...',
   );
+  JsonParser.writeToFile(masterOutputPath, uniqueSchemes);
 
-  print('======================================');
-  print('Build Complete');
-  print('======================================');
-  print('Files           : ${jsonFiles.length}');
-  print('Input Records   : $totalRecords');
-  print('Unique Schemes  : ${output.length}');
-  print('Duplicates      : ${totalRecords - output.length}');
-  print('Output          : $outputFile');
+  print('Master compilation complete. File saved to: $masterOutputPath');
 }

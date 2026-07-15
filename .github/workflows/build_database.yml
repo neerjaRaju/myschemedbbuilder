@@ -1,0 +1,53 @@
+name: Weekly Database Builder
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Every Sunday at 00:00 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: database-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Dart SDK
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Cache Pub Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
+
+      - name: Install Dependencies
+        run: dart pub get
+
+      - name: Execute Crawlers
+        run: |
+          dart run bin/crawl_myscheme.dart
+          dart run bin/crawl_india_gov.dart
+          dart run bin/crawl_state.dart
+
+      - name: Compile Datasets & Build SQLite DB
+        run: |
+          dart run bin/build_master_dataset.dart
+          dart run bin/build_database.dart
+
+      - name: Commit and Push Database Updates
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "automated: weekly schemes database update [skip ci]"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "41898282+github-actions[bot]@users.noreply.github.com"
+          file_pattern: "data/generated/*.json data/processed/schemes_master.json data/output/schemes.db"

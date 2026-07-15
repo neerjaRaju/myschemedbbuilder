@@ -8,21 +8,20 @@ import '../lib/parser/json_parser.dart';
 
 void main() async {
   print('==================================================');
-  print('Starting MyScheme Crawler');
+  print('Starting Regional State Portals Crawler');
   print('==================================================');
 
-  final cache = CacheManager(path: 'data/cache/myscheme');
+  final cache = CacheManager(path: 'data/cache/state_portals');
   final rateLimiter = RateLimiter(
-    maxRequests: 5,
+    maxRequests: 2,
     interval: const Duration(seconds: 1),
   );
   final crawler = ProductionCrawler(cache: cache, rateLimiter: rateLimiter);
 
-  // Define seed crawl URLs
+  // Simulated state portal schema seeds
   final seedUrls = [
-    'https://www.myscheme.gov.in/schemes/pm-kisan',
-    'https://www.myscheme.gov.in/schemes/pm-shram-yogi-maan-dhan',
-    'https://www.myscheme.gov.in/schemes/ayushman-bharat-jan-arogyha-yojana',
+    'https://sanjeevani.rajasthan.gov.in/schemes/bhamashah',
+    'https://mahadbt.maharashtra.gov.in/schemes/scholarship',
   ];
 
   for (var url in seedUrls) {
@@ -35,30 +34,31 @@ void main() async {
     await crawler.start(
       onPageDownloaded: (result) {
         if (result.error != null) {
-          stderr.writeln('Failed to download [${result.url}]: ${result.error}');
+          stderr.writeln('Download Error [${result.url}]: ${result.error}');
           return;
         }
 
         if (result.content != null) {
-          print('Successfully crawled & processing: ${result.url}');
+          // Attempt to dynamically resolve state from domain structures
+          final resolvedState = result.url.contains('rajasthan')
+              ? 'Rajasthan'
+              : 'Maharashtra';
+
+          print('Extracting $resolvedState Scheme from: ${result.url}');
           final scheme = SchemeExtractor.extract(
             html: result.content!,
             sourceUrl: result.url,
-            defaultState: 'Central',
-            defaultMinistry:
-                'Ministry of Electronics and Information Technology',
+            defaultState: resolvedState,
+            defaultMinistry: 'Department of Social Justice',
           );
           extractedSchemes.add(scheme);
         }
       },
     );
 
-    print('\nCrawled ${extractedSchemes.length} schemes from MyScheme.');
-
-    // Save outputs
-    final outputPath = 'data/generated/myscheme_schemes.json';
+    final outputPath = 'data/generated/state_schemes.json';
     JsonParser.writeToFile(outputPath, extractedSchemes);
-    print('Results saved to $outputPath');
+    print('Successfully generated: $outputPath');
   } finally {
     rateLimiter.dispose();
   }

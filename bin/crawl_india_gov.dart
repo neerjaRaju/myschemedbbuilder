@@ -8,21 +8,19 @@ import '../lib/parser/json_parser.dart';
 
 void main() async {
   print('==================================================');
-  print('Starting MyScheme Crawler');
+  print('Starting India Gov Portal Crawler');
   print('==================================================');
 
-  final cache = CacheManager(path: 'data/cache/myscheme');
+  final cache = CacheManager(path: 'data/cache/india_gov');
   final rateLimiter = RateLimiter(
-    maxRequests: 5,
+    maxRequests: 3,
     interval: const Duration(seconds: 1),
   );
   final crawler = ProductionCrawler(cache: cache, rateLimiter: rateLimiter);
 
-  // Define seed crawl URLs
   final seedUrls = [
-    'https://www.myscheme.gov.in/schemes/pm-kisan',
-    'https://www.myscheme.gov.in/schemes/pm-shram-yogi-maan-dhan',
-    'https://www.myscheme.gov.in/schemes/ayushman-bharat-jan-arogyha-yojana',
+    'https://www.india.gov.in/schemes/national-social-assistance-programme',
+    'https://www.india.gov.in/schemes/pradhan-mantri-awas-yojana-gramin',
   ];
 
   for (var url in seedUrls) {
@@ -40,25 +38,21 @@ void main() async {
         }
 
         if (result.content != null) {
-          print('Successfully crawled & processing: ${result.url}');
+          print('Processing parsed model: ${result.url}');
           final scheme = SchemeExtractor.extract(
             html: result.content!,
             sourceUrl: result.url,
             defaultState: 'Central',
-            defaultMinistry:
-                'Ministry of Electronics and Information Technology',
+            defaultMinistry: 'Ministry of Rural Development',
           );
           extractedSchemes.add(scheme);
         }
       },
     );
 
-    print('\nCrawled ${extractedSchemes.length} schemes from MyScheme.');
-
-    // Save outputs
-    final outputPath = 'data/generated/myscheme_schemes.json';
+    final outputPath = 'data/generated/india_gov_schemes.json';
     JsonParser.writeToFile(outputPath, extractedSchemes);
-    print('Results saved to $outputPath');
+    print('Successfully generated: $outputPath');
   } finally {
     rateLimiter.dispose();
   }
