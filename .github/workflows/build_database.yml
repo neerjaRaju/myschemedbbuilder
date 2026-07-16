@@ -9,11 +9,13 @@ concurrency:
   group: database-build
   cancel-in-progress: false
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    timeout-minutes: 120
 
     steps:
       - name: Checkout Repository
@@ -29,25 +31,38 @@ jobs:
         with:
           path: ~/.pub-cache
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
 
       - name: Install Dependencies
         run: dart pub get
 
-      - name: Execute Crawlers
-        run: |
-          dart run bin/crawl_myscheme.dart
-          dart run bin/crawl_india_gov.dart
-          dart run bin/crawl_state.dart
+      - name: Static Code Analysis
+        run: dart analyze
 
-      - name: Compile Datasets & Build SQLite DB
-        run: |
-          dart run bin/build_master_dataset.dart
-          dart run bin/build_database.dart
+      - name: Crawl MyScheme
+        run: dart run bin/crawl_myscheme.dart
+
+      - name: Crawl india.gov.in
+        run: dart run bin/crawl_india_gov.dart
+
+      - name: Crawl State Portals
+        run: dart run bin/crawl_state.dart
+
+      - name: Build Master Dataset
+        run: dart run bin/build_master_dataset.dart
+
+      - name: Build SQLite Database
+        run: dart run bin/build_database.dart
 
       - name: Commit and Push Database Updates
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "automated: weekly schemes database update [skip ci]"
-          commit_user_name: "github-actions[bot]"
-          commit_user_email: "41898282+github-actions[bot]@users.noreply.github.com"
-          file_pattern: "data/generated/*.json data/processed/schemes_master.json data/output/schemes.db"
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/generated/*.json data/processed/schemes_master.json data/output/schemes.db
+          if git diff --cached --quiet; then
+            echo "No dataset changes to commit."
+          else
+            git commit -m "automated: weekly schemes database update [skip ci]"
+            git push
+          fi
