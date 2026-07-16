@@ -55,10 +55,13 @@ class MySchemeApiClient {
   MySchemeApiClient(this.config, {Downloader? downloader})
       : _downloader = downloader ?? Downloader();
 
+  /// Headers matching the requests the official myscheme.gov.in web app
+  /// makes to its API (User-Agent included, as the gateway may filter it).
   Map<String, String> get _headers => {
         'Accept': 'application/json, text/plain, */*',
         'Origin': 'https://www.myscheme.gov.in',
         'Referer': 'https://www.myscheme.gov.in/',
+        'User-Agent': 'Mozilla/5.0',
         'x-api-key': config.apiKey,
       };
 
