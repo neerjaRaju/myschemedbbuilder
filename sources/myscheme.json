@@ -1,0 +1,25 @@
+{
+  "name": "myscheme",
+  "seed_urls": [
+    "https://www.myscheme.gov.in/schemes/pm-kisan",
+    "https://www.myscheme.gov.in/schemes/pmjay",
+    "https://www.myscheme.gov.in/schemes/pmsym"
+  ],
+  "sitemap_urls": [
+    "https://www.myscheme.gov.in/sitemap-0.xml"
+  ],
+  "url_allow_pattern": "^https://www\\.myscheme\\.gov\\.in/(schemes/|search)",
+  "detail_url_pattern": "^https://www\\.myscheme\\.gov\\.in/schemes/[a-z0-9-]+$",
+  "default_state": "Central",
+  "default_ministry": "",
+  "requests_per_second": 4,
+  "max_pages": 5000,
+  "api": {
+    "base_url": "https://api.myscheme.gov.in",
+    "api_key": "tYTy5eEhlu9rFjyxuCr7ra7ACp4dv1RH8gWuHTDc",
+    "search_path": "/search/v6/schemes",
+    "detail_path": "/schemes/v5/public/schemes",
+    "page_size": 100,
+    "requests_per_second": 4
+  }
+}

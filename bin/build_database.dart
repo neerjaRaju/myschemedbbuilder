@@ -1,54 +1,41 @@
 import 'dart:io';
-import '../lib/parser/json_parser.dart';
-import '../lib/exporter/sqlite_exporter.dart';
 
+import 'package:government_scheme_db_builder/exporter/sqlite_exporter.dart';
+import 'package:government_scheme_db_builder/parser/json_parser.dart';
+import 'package:government_scheme_db_builder/utils/constants.dart';
+import 'package:government_scheme_db_builder/utils/logger.dart';
+
+/// Builds the offline SQLite database `data/output/schemes.db` from the
+/// master dataset produced by `build_master_dataset.dart`.
 void main() {
-  final String masterDatasetPath = 'data/processed/schemes_master.json';
-  final String dbOutputPath = 'data/output/schemes.db';
+  const logger = SimpleLogger(name: 'build-database');
+  logger.info('Starting SQLite database builder');
 
-  print('==================================================');
-  print('Starting SQLite Database Builder');
-  print('==================================================');
-
-  final File masterFile = File(masterDatasetPath);
-  if (!masterFile.existsSync()) {
-    print('Error: Master dataset file does not exist at "$masterDatasetPath".');
-    print('Please run bin/build_master_dataset.dart first.');
+  if (!File(kMasterDatasetPath).existsSync()) {
+    logger.error('Master dataset not found at "$kMasterDatasetPath".');
+    logger.error('Run `dart run bin/build_master_dataset.dart` first.');
     exit(1);
   }
 
-  print('Loading master schemes...');
-  final schemes = JsonParser.parseFile(masterDatasetPath);
-  print('Loaded ${schemes.length} schemes.');
+  final schemes = JsonParser.parseFile(kMasterDatasetPath);
+  logger.info('Loaded ${schemes.length} schemes from master dataset.');
 
   if (schemes.isEmpty) {
-    print('Warning: No records found to build into the SQLite database.');
-    exit(0);
+    logger.warn('No records found; writing an empty (schema-only) database.');
   }
-
-  // Ensure old output database file is replaced cleanly
-  final File dbFile = File(dbOutputPath);
-  if (dbFile.existsSync()) {
-    print('Removing existing database at "$dbOutputPath" for clean build...');
-    dbFile.deleteSync();
-  }
-
-  print(
-    'Exporting to SQLite (applying transaction batching, indexing, WAL & FTS5 search)...',
-  );
-  final exporter = SqliteExporter(dbOutputPath);
 
   try {
     final stopwatch = Stopwatch()..start();
-    exporter.export(schemes);
+    SqliteExporter(kDatabasePath).export(schemes);
     stopwatch.stop();
 
-    print(
-      'Export finished successfully in ${stopwatch.elapsedMilliseconds} ms.',
+    logger.info(
+      'Exported ${schemes.length} schemes in '
+      '${stopwatch.elapsedMilliseconds} ms.',
     );
-    print('SQLite Database created at: $dbOutputPath');
-  } catch (e) {
-    print('Error: Database export pipeline failed: $e');
+    logger.info('SQLite database created at: $kDatabasePath');
+  } on Exception catch (e) {
+    logger.error('Database export failed: $e');
     exit(1);
   }
 }

@@ -1,17 +1,22 @@
 import 'dart:io';
 
+import 'constants.dart';
+
+/// Filesystem helpers shared by the pipeline entrypoints.
 class FileUtils {
-  /// Ensures that all required directory trees exist for crawler output.
+  FileUtils._();
+
+  /// Ensures that every data directory used by the pipeline exists.
   static void ensureDirectoriesExist() {
-    final directories = [
-      'data/raw',
-      'data/cache',
-      'data/generated',
-      'data/processed',
-      'data/output',
+    const directories = [
+      kRawDir,
+      kCacheDir,
+      kGeneratedDir,
+      kProcessedDir,
+      kOutputDir,
     ];
 
-    for (var dirPath in directories) {
+    for (final dirPath in directories) {
       final dir = Directory(dirPath);
       if (!dir.existsSync()) {
         dir.createSync(recursive: true);
@@ -19,21 +24,16 @@ class FileUtils {
     }
   }
 
-  /// Cleans out old cached data recursively.
+  /// Removes every entry inside [path] without deleting the directory.
   static void clearDirectoryContents(String path) {
     final dir = Directory(path);
-    if (dir.existsSync()) {
-      dir.listSync().forEach((entity) {
-        if (entity is File) {
-          entity.deleteSync();
-        } else if (entity is Directory) {
-          entity.deleteSync(recursive: true);
-        }
-      });
+    if (!dir.existsSync()) return;
+    for (final entity in dir.listSync()) {
+      entity.deleteSync(recursive: true);
     }
   }
 
-  /// Safe write-string execution with directory-building fallback.
+  /// Writes [content] to [path], creating parent directories as needed.
   static void writeSafeString(String path, String content) {
     final file = File(path);
     if (!file.parent.existsSync()) {

@@ -1,6 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
+/// Persistent URL queue enabling resumable, incremental crawls.
+///
+/// Pending and completed URL sets are stored as JSON on disk after every
+/// mutation, so an interrupted crawl picks up exactly where it stopped and
+/// URLs completed in earlier runs are never re-queued.
 class CrawlerQueue {
   final File _file;
   final Set<String> _pending = {};
@@ -10,7 +15,6 @@ class CrawlerQueue {
     _loadState();
   }
 
-  /// Loads previous pending and completed states from disk if they exist.
   void _loadState() {
     if (!_file.existsSync()) return;
 
@@ -18,19 +22,18 @@ class CrawlerQueue {
       final content = _file.readAsStringSync();
       if (content.trim().isEmpty) return;
 
-      final Map<String, dynamic> data = json.decode(content);
+      final data = json.decode(content) as Map<String, dynamic>;
       if (data['pending'] is List) {
-        _pending.addAll(List<String>.from(data['pending']));
+        _pending.addAll(List<String>.from(data['pending'] as List));
       }
       if (data['completed'] is List) {
-        _completed.addAll(List<String>.from(data['completed']));
+        _completed.addAll(List<String>.from(data['completed'] as List));
       }
     } catch (_) {
-      // Fallback gracefully on parsing corruption
+      // Recover gracefully from state-file corruption by starting fresh.
     }
   }
 
-  /// Saves current state transactionally back to disk.
   void _saveState() {
     if (!_file.parent.existsSync()) {
       _file.parent.createSync(recursive: true);
@@ -42,13 +45,27 @@ class CrawlerQueue {
     _file.writeAsStringSync(json.encode(data), flush: true);
   }
 
+  /// Adds [url] unless it is already pending or was completed before.
   void add(String url) {
-    if (!_completed.contains(url) && !_pending.contains(url)) {
-      _pending.add(url);
-      _saveState();
-    }
+    if (_enqueue(url)) _saveState();
   }
 
+  /// Adds every URL in [urls], persisting state once.
+  void addAll(Iterable<String> urls) {
+    var changed = false;
+    for (final url in urls) {
+      changed = _enqueue(url) || changed;
+    }
+    if (changed) _saveState();
+  }
+
+  bool _enqueue(String url) {
+    if (_completed.contains(url) || _pending.contains(url)) return false;
+    _pending.add(url);
+    return true;
+  }
+
+  /// Removes and returns the next pending URL, or `null` when empty.
   String? next() {
     if (_pending.isEmpty) return null;
     final url = _pending.first;
@@ -57,15 +74,16 @@ class CrawlerQueue {
     return url;
   }
 
+  /// Marks [url] as done so it is skipped by all future runs.
   void complete(String url) {
     _pending.remove(url);
     _completed.add(url);
     _saveState();
   }
 
+  /// Records a failure: the URL leaves the pending set without joining the
+  /// completed set, so a later crawl run can retry it.
   void fail(String url) {
-    // If a URL fails, we remove it from pending and do not add to completed,
-    // allowing it to be queued again on subsequent crawler runs.
     _pending.remove(url);
     _saveState();
   }
@@ -76,6 +94,7 @@ class CrawlerQueue {
 
   int get completedCount => _completed.length;
 
+  /// Clears all state and removes the backing file.
   void clear() {
     _pending.clear();
     _completed.clear();

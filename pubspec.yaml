@@ -1,18 +1,20 @@
 name: government_scheme_db_builder
-description: A sample command-line application.
-version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+description: >-
+  Builds an offline SQLite database of Indian government schemes by crawling
+  official portals (MyScheme, india.gov.in and state portals), then
+  extracting, normalizing, validating and de-duplicating the data.
+version: 2.0.0
+repository: https://github.com/neerjaRaju/myschemedbbuilder
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
-  http: ^1.2.0
-  html: ^0.15.4
   crypto: ^3.0.3
+  html: ^0.15.4
+  http: ^1.2.0
   sqlite3: ^2.4.0
-  path: ^1.9.0
 
 dev_dependencies:
-  test: ^1.25.2
   lints: ^3.0.0
+  test: ^1.25.2
