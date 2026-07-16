@@ -8,7 +8,7 @@ class RateLimiter {
   Timer? _refillTimer;
 
   RateLimiter({required this.maxRequests, required this.interval})
-    : _tokens = maxRequests {
+      : _tokens = maxRequests {
     _startRefillTimer();
   }
 

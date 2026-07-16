@@ -1,7 +1,9 @@
-import 'dart:convert';
-
 import '../utils/crypto_utils.dart';
 
+/// Immutable data model for one government scheme.
+///
+/// The [hash] fingerprints the record's content (URL, title, description)
+/// and drives duplicate detection and incremental database sync.
 class Scheme {
   final String id;
   final String title;

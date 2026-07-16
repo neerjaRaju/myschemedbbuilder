@@ -72,8 +72,7 @@ class MySchemeApiClient {
 
   /// Fetches the raw detail payload for one scheme [slug].
   Future<String> fetchDetailRaw(String slug) {
-    final url =
-        '${config.baseUrl}${config.detailPath}?slug=$slug&lang=en';
+    final url = '${config.baseUrl}${config.detailPath}?slug=$slug&lang=en';
     return _downloader.fetchString(url, extraHeaders: _headers);
   }
 

@@ -38,8 +38,7 @@ class CrawlStats {
   int get processed => downloaded + cached + failed + skippedByRobots;
 
   @override
-  String toString() =>
-      'downloaded=$downloaded cached=$cached failed=$failed '
+  String toString() => 'downloaded=$downloaded cached=$cached failed=$failed '
       'robotsSkipped=$skippedByRobots';
 }
 

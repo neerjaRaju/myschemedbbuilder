@@ -41,9 +41,12 @@ void main() {
       expect(Normalizer.normalizeHelpline('919876543210'), '+91-9876543210');
     });
 
-    test('passes through short codes sanitized', () {
-      expect(Normalizer.normalizeHelpline('Call 1800-11-0001 now'),
-          'Call 1800-11-0001 now');
+    test('passes through text and toll-free strings sanitized', () {
+      expect(
+        Normalizer.normalizeHelpline('Call  1800-11-0001 now'),
+        'Call 1800-11-0001 now',
+      );
+      expect(Normalizer.normalizeHelpline('155261'), '155261');
     });
   });
 

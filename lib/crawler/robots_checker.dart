@@ -73,8 +73,9 @@ class RobotsChecker {
             agent == userAgent.toLowerCase();
       } else if (appliesToUs && key == 'disallow' && value.isNotEmpty) {
         // Convert glob pattern rules to RegExp.
-        final escapedRule =
-            RegExp.escape(value).replaceAll(r'\*', '.*').replaceAll(r'\$', r'$');
+        final escapedRule = RegExp.escape(value)
+            .replaceAll(r'\*', '.*')
+            .replaceAll(r'\$', r'$');
         rules.add(RegExp('^$escapedRule'));
       }
     }

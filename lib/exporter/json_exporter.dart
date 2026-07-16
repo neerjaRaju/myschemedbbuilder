@@ -22,8 +22,7 @@ class JsonExporter {
     if (!file.parent.existsSync()) {
       file.parent.createSync(recursive: true);
     }
-    final jsonString =
-        _encoder.convert(sorted.map((s) => s.toJson()).toList());
+    final jsonString = _encoder.convert(sorted.map((s) => s.toJson()).toList());
     file.writeAsStringSync('$jsonString\n', flush: true);
   }
 }

@@ -21,18 +21,30 @@ class Normalizer {
   static final RegExp _trackingParam = RegExp(r'^(utm_|fbclid|gclid)');
 
   static const Map<String, int> _months = {
-    'jan': 1, 'january': 1,
-    'feb': 2, 'february': 2,
-    'mar': 3, 'march': 3,
-    'apr': 4, 'april': 4,
+    'jan': 1,
+    'january': 1,
+    'feb': 2,
+    'february': 2,
+    'mar': 3,
+    'march': 3,
+    'apr': 4,
+    'april': 4,
     'may': 5,
-    'jun': 6, 'june': 6,
-    'jul': 7, 'july': 7,
-    'aug': 8, 'august': 8,
-    'sep': 9, 'sept': 9, 'september': 9,
-    'oct': 10, 'october': 10,
-    'nov': 11, 'november': 11,
-    'dec': 12, 'december': 12,
+    'jun': 6,
+    'june': 6,
+    'jul': 7,
+    'july': 7,
+    'aug': 8,
+    'august': 8,
+    'sep': 9,
+    'sept': 9,
+    'september': 9,
+    'oct': 10,
+    'october': 10,
+    'nov': 11,
+    'november': 11,
+    'dec': 12,
+    'december': 12,
   };
 
   /// Strips HTML markup and entities, removes invisible unicode characters,
@@ -62,16 +74,23 @@ class Normalizer {
   }
 
   /// Formats Indian phone numbers as `+91-XXXXXXXXXX`; other values
-  /// (short codes, toll-free strings) are returned sanitized.
+  /// (short codes, toll-free strings, text) are returned sanitized.
+  ///
+  /// Only inputs consisting purely of digits and phone separators are
+  /// reformatted, so surrounding prose is never mangled.
   static String normalizeHelpline(String input) {
-    final digits = input.replaceAll(RegExp(r'\D'), '');
-    if (digits.length == 10) {
-      return '+91-$digits';
+    final clean = sanitizeText(input);
+    final isPhoneLike = RegExp(r'^[\d\s()+-]+$').hasMatch(clean);
+    if (isPhoneLike) {
+      final digits = clean.replaceAll(RegExp(r'\D'), '');
+      if (digits.length == 10) {
+        return '+91-$digits';
+      }
+      if (digits.length == 12 && digits.startsWith('91')) {
+        return '+91-${digits.substring(2)}';
+      }
     }
-    if (digits.length == 12 && digits.startsWith('91')) {
-      return '+91-${digits.substring(2)}';
-    }
-    return sanitizeText(input);
+    return clean;
   }
 
   /// Parses common Indian-government date formats into ISO 8601

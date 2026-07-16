@@ -12,8 +12,7 @@ Future<void> main() async {
   logger.info('Starting state portals crawler');
 
   try {
-    final config =
-        SourceConfig.loadFromFile('$kSourcesDir/state_portals.json');
+    final config = SourceConfig.loadFromFile('$kSourcesDir/state_portals.json');
     final schemes = await CrawlRunner(config).run();
     logger.info('State portals crawl finished with ${schemes.length} schemes.');
   } on Exception catch (e) {

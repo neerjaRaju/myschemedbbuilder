@@ -33,8 +33,8 @@ class SchemeExtractor {
 
     final fromJson = _extractFromNextData(parser);
 
-    final title =
-        fromJson?['title'] ?? parser.selectText('h1, .scheme-title, #scheme-name');
+    final title = fromJson?['title'] ??
+        parser.selectText('h1, .scheme-title, #scheme-name');
     final description = fromJson?['description'] ??
         parser.selectText(
           'div.description, .scheme-details, p.about-scheme',
@@ -88,8 +88,7 @@ class SchemeExtractor {
       parser.selectText('.last-updated, .updated-on, time'),
     );
 
-    final department =
-        parser.selectText('.department-name, span.department');
+    final department = parser.selectText('.department-name, span.department');
 
     // Deterministic ID derived from the normalized URL.
     final id = sha256Hash(normalizedUrl).substring(0, 16);
@@ -204,7 +203,7 @@ class SchemeExtractor {
     final title = _plainText(_dig(basic, ['schemeName']));
     if (title.isEmpty) return null;
 
-    final documents = _plainText(
+    final documents = _multilineText(
       _dig(localized, ['applicationProcess', 0, 'requiredDocuments']) ??
           _dig(content, ['requiredDocuments']),
     );
@@ -325,12 +324,26 @@ class SchemeExtractor {
     return Normalizer.sanitizeText(buffer.toString());
   }
 
+  /// Like [_plainText] but preserves item boundaries as newlines, for
+  /// values that represent lists (e.g. required documents).
+  static String _multilineText(Object? value) {
+    if (value == null) return '';
+    if (value is String) {
+      return value
+          .split('\n')
+          .map(Normalizer.sanitizeText)
+          .where((line) => line.isNotEmpty)
+          .join('\n');
+    }
+    if (value is List) {
+      return value.map(_plainText).where((line) => line.isNotEmpty).join('\n');
+    }
+    return _plainText(value);
+  }
+
   static List<String> _stringList(Object? value) {
     if (value is! List) return const [];
-    return value
-        .map(_plainText)
-        .where((item) => item.isNotEmpty)
-        .toList();
+    return value.map(_plainText).where((item) => item.isNotEmpty).toList();
   }
 
   static String _firstNonEmpty(List<String> candidates) {
