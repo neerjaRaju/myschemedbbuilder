@@ -1,65 +1,43 @@
 import 'dart:io';
-import '../lib/crawler/cache_manager.dart';
-import '../lib/crawler/crawler.dart';
-import '../lib/crawler/rate_limiter.dart';
-import '../lib/extractor/scheme_extractor.dart';
-import '../lib/models/scheme.dart';
-import '../lib/parser/json_parser.dart';
 
-void main() async {
-  print('==================================================');
-  print('Starting MyScheme Crawler');
-  print('==================================================');
+import 'package:government_scheme_db_builder/crawler/crawl_runner.dart';
+import 'package:government_scheme_db_builder/crawler/myscheme_api.dart';
+import 'package:government_scheme_db_builder/crawler/source_config.dart';
+import 'package:government_scheme_db_builder/utils/constants.dart';
+import 'package:government_scheme_db_builder/utils/logger.dart';
 
-  final cache = CacheManager(path: 'data/cache/myscheme');
-  final rateLimiter = RateLimiter(
-    maxRequests: 5,
-    interval: const Duration(seconds: 1),
-  );
-  final crawler = ProductionCrawler(cache: cache, rateLimiter: rateLimiter);
+/// Crawls the national MyScheme portal and writes
+/// `data/generated/myscheme_schemes.json`.
+///
+/// MyScheme is a client-rendered application, so the primary strategy is
+/// its official public JSON API (the same one the website calls). If the
+/// API becomes unavailable, the entrypoint falls back to HTML crawling.
+Future<void> main() async {
+  const logger = SimpleLogger(name: 'crawl-myscheme');
+  logger.info('Starting MyScheme crawler');
 
-  // Define seed crawl URLs
-  final seedUrls = [
-    'https://www.myscheme.gov.in/schemes/pm-kisan',
-    'https://www.myscheme.gov.in/schemes/pm-shram-yogi-maan-dhan',
-    'https://www.myscheme.gov.in/schemes/ayushman-bharat-jan-arogyha-yojana',
-  ];
+  final config = SourceConfig.loadFromFile('$kSourcesDir/myscheme.json');
 
-  for (var url in seedUrls) {
-    crawler.queueUrl(url);
+  final apiBlock = config.api;
+  if (apiBlock != null) {
+    try {
+      final apiConfig = MySchemeApiConfig.fromJson(apiBlock);
+      final schemes = await MySchemeApiRunner(apiConfig).run();
+      logger.info(
+        'MyScheme API crawl finished with ${schemes.length} schemes.',
+      );
+      return;
+    } on Exception catch (e) {
+      logger.error('MyScheme API crawl failed: $e');
+      logger.warn('Falling back to HTML crawl.');
+    }
   }
 
-  final List<Scheme> extractedSchemes = [];
-
   try {
-    await crawler.start(
-      onPageDownloaded: (result) {
-        if (result.error != null) {
-          stderr.writeln('Failed to download [${result.url}]: ${result.error}');
-          return;
-        }
-
-        if (result.content != null) {
-          print('Successfully crawled & processing: ${result.url}');
-          final scheme = SchemeExtractor.extract(
-            html: result.content!,
-            sourceUrl: result.url,
-            defaultState: 'Central',
-            defaultMinistry:
-                'Ministry of Electronics and Information Technology',
-          );
-          extractedSchemes.add(scheme);
-        }
-      },
-    );
-
-    print('\nCrawled ${extractedSchemes.length} schemes from MyScheme.');
-
-    // Save outputs
-    final outputPath = 'data/generated/myscheme_schemes.json';
-    JsonParser.writeToFile(outputPath, extractedSchemes);
-    print('Results saved to $outputPath');
-  } finally {
-    rateLimiter.dispose();
+    final schemes = await CrawlRunner(config).run();
+    logger.info('MyScheme HTML crawl finished with ${schemes.length} schemes.');
+  } on Exception catch (e) {
+    logger.error('MyScheme crawl failed: $e');
+    exitCode = 1;
   }
 }

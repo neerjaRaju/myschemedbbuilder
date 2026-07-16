@@ -1,132 +1,68 @@
 import 'dart:io';
-import 'package:sqlite3/sqlite3.dart';
-import '../lib/parser/json_parser.dart';
-import '../lib/utils/logger.dart';
 
+import 'package:government_scheme_db_builder/database/database.dart';
+import 'package:government_scheme_db_builder/exporter/sqlite_exporter.dart';
+import 'package:government_scheme_db_builder/parser/json_parser.dart';
+import 'package:government_scheme_db_builder/utils/constants.dart';
+import 'package:government_scheme_db_builder/utils/logger.dart';
+
+/// Incrementally syncs an existing `schemes.db` with the current master
+/// dataset: inserts new records, updates changed ones (detected via content
+/// hash) and deletes records that disappeared from the dataset.
+///
+/// Falls back to a full build when no database exists yet.
 void main() {
-  final String masterDatasetPath = 'data/processed/schemes_master.json';
-  final String dbOutputPath = 'data/output/schemes.db';
-  final logger = SimpleLogger();
+  const logger = SimpleLogger(name: 'update-database');
+  logger.info('Starting incremental database sync');
 
-  logger.info('==================================================');
-  logger.info('Starting Incremental Database Sync');
-  logger.info('==================================================');
-
-  final File masterFile = File(masterDatasetPath);
-  if (!masterFile.existsSync()) {
-    logger.error('Master dataset file does not exist at "$masterDatasetPath".');
+  if (!File(kMasterDatasetPath).existsSync()) {
+    logger.error('Master dataset not found at "$kMasterDatasetPath".');
     exit(1);
   }
 
-  final File dbFile = File(dbOutputPath);
-  if (!dbFile.existsSync()) {
-    logger.warn(
-      'No active database file found at "$dbOutputPath". Falling back to full build...',
-    );
-    _triggerFullBuild();
+  final incomingSchemes = JsonParser.parseFile(kMasterDatasetPath);
+  logger.info('Incoming schemes: ${incomingSchemes.length}');
+
+  if (!File(kDatabasePath).existsSync()) {
+    logger.warn('No database at "$kDatabasePath"; running a full build.');
+    SqliteExporter(kDatabasePath).export(incomingSchemes);
+    logger.info('Full build complete: ${incomingSchemes.length} schemes.');
     return;
   }
 
-  logger.info('Loading master dataset...');
-  final incomingSchemes = JsonParser.parseFile(masterDatasetPath);
-  logger.info('Incoming target schemes: ${incomingSchemes.length}');
-
-  final db = sqlite3.open(dbOutputPath);
-
+  final db = SchemeDatabase.open(kDatabasePath);
   try {
-    // 1. Fetch existing hashes and IDs to compute differences
-    logger.info('Querying existing state keys...');
-    final results = db.select('SELECT id, hash FROM schemes;');
-    final Map<String, String> existingMap = {
-      for (var row in results) row['id'] as String: row['hash'] as String,
-    };
-
-    final List<String> toDelete = [];
+    final existing = db.existingHashes();
     final incomingIds = incomingSchemes.map((s) => s.id).toSet();
 
-    // Identify deleted records (present in DB but missing from the crawled master dataset)
-    for (var existingId in existingMap.keys) {
-      if (!incomingIds.contains(existingId)) {
-        toDelete.add(existingId);
-      }
-    }
+    final toDelete =
+        existing.keys.where((id) => !incomingIds.contains(id)).toList();
+    final toUpsert = incomingSchemes
+        .where((scheme) => existing[scheme.id] != scheme.hash)
+        .toList();
 
-    // 2. Identify insertions and updates
-    final toInsertOrUpdate = incomingSchemes.where((scheme) {
-      final existingHash = existingMap[scheme.id];
-      // Insert if new, or update if the payload hash has changed
-      return existingHash == null || existingHash != scheme.hash;
-    }).toList();
-
-    if (toInsertOrUpdate.isEmpty && toDelete.isEmpty) {
-      logger.info('Database is already up to date. Zero changes needed.');
+    if (toUpsert.isEmpty && toDelete.isEmpty) {
+      logger.info('Database already up to date; no changes needed.');
       return;
     }
 
-    // 3. Apply changes inside a single localized transaction
-    db.execute('BEGIN TRANSACTION;');
-
     if (toDelete.isNotEmpty) {
-      logger.info('Purging ${toDelete.length} legacy records...');
-      final deleteStmt = db.prepare('DELETE FROM schemes WHERE id = ?;');
-      for (var id in toDelete) {
-        deleteStmt.execute([id]);
-      }
-      deleteStmt.dispose();
+      logger.info('Deleting ${toDelete.length} removed records...');
+      db.deleteSchemes(toDelete);
+    }
+    if (toUpsert.isNotEmpty) {
+      logger.info('Upserting ${toUpsert.length} new/changed records...');
+      db.insertSchemes(toUpsert);
     }
 
-    if (toInsertOrUpdate.isNotEmpty) {
-      logger.info('Syncing ${toInsertOrUpdate.length} new/updated records...');
-      final insertStmt = db.prepare('''
-        INSERT OR REPLACE INTO schemes (
-          id, title, description, benefits, eligibility, documents, 
-          application_process, ministry, department, category, state, 
-          official_url, helpline, last_updated, hash
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-      ''');
+    db.setMeta('record_count', '${db.count()}');
+    db.optimize();
 
-      for (var scheme in toInsertOrUpdate) {
-        insertStmt.execute([
-          scheme.id,
-          scheme.title,
-          scheme.description,
-          scheme.benefits,
-          scheme.eligibility,
-          scheme.requiredDocuments.join('\n'),
-          scheme.applicationProcess,
-          scheme.ministry,
-          scheme.department,
-          scheme.category,
-          scheme.state,
-          scheme.officialUrl,
-          scheme.helpline,
-          scheme.lastUpdated,
-          scheme.hash,
-        ]);
-      }
-      insertStmt.dispose();
-    }
-
-    db.execute('COMMIT;');
-
-    // 4. Optimize the indices and vacuum storage space
-    logger.info('Optimizing index allocations and packing disk sectors...');
-    db.execute('VACUUM;');
-    db.execute('ANALYZE;');
-
-    logger.info('Sync completed successfully:');
-    logger.info('  - Inserted/Updated: ${toInsertOrUpdate.length}');
-    logger.info('  - Deleted: ${toDelete.length}');
-  } catch (e) {
-    db.execute('ROLLBACK;');
-    logger.error('Incremental database synchronization failed: $e');
+    logger.info('Sync complete: +${toUpsert.length} / -${toDelete.length}.');
+  } on Exception catch (e) {
+    logger.error('Incremental sync failed: $e');
     exit(1);
   } finally {
     db.close();
   }
-}
-
-void _triggerFullBuild() {
-  // Utility fallback redirection to rebuild execution bin
-  exitCode = 0;
 }

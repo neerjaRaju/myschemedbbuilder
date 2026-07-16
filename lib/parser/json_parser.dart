@@ -1,41 +1,49 @@
 import 'dart:convert';
 import 'dart:io';
-import '../models/scheme.dart';
 
+import '../models/scheme.dart';
+import '../utils/logger.dart';
+
+/// Reads generated crawler JSON files into typed [Scheme] lists.
+///
+/// Writing is handled by `JsonExporter` so serialization rules live in one
+/// place.
 class JsonParser {
-  /// Parses a generated crawler JSON file safely into a typed List of Schemes.
+  JsonParser._();
+
+  static const SimpleLogger _logger = SimpleLogger(name: 'json-parser');
+
+  /// Parses a crawler JSON file safely into a typed list of schemes.
+  ///
+  /// Malformed files or records are logged and skipped instead of aborting
+  /// the whole pipeline.
   static List<Scheme> parseFile(String filePath) {
     final file = File(filePath);
     if (!file.existsSync()) return [];
 
+    final rawContent = file.readAsStringSync();
+    if (rawContent.trim().isEmpty) return [];
+
+    Object? decoded;
     try {
-      final rawContent = file.readAsStringSync();
-      if (rawContent.trim().isEmpty) return [];
+      decoded = json.decode(rawContent);
+    } on FormatException catch (e) {
+      _logger.error('Invalid JSON in $filePath: $e');
+      return [];
+    }
+    if (decoded is! List) {
+      _logger.error('Expected a JSON array in $filePath.');
+      return [];
+    }
 
-      final decoded = json.decode(rawContent);
-      if (decoded is List) {
-        return decoded
-            .map(
-              (item) => Scheme.fromJson(Map<String, dynamic>.from(item as Map)),
-            )
-            .toList();
+    final schemes = <Scheme>[];
+    for (final item in decoded) {
+      try {
+        schemes.add(Scheme.fromJson(Map<String, dynamic>.from(item as Map)));
+      } catch (e) {
+        _logger.warn('Skipping malformed record in $filePath: $e');
       }
-    } catch (e) {
-      stderr.writeln('Failed to parse scheme JSON file: $filePath. Error: $e');
     }
-    return [];
-  }
-
-  /// Writes a verified list of Schemes into standard indented JSON.
-  static void writeToFile(String filePath, List<Scheme> schemes) {
-    final file = File(filePath);
-    if (!file.parent.existsSync()) {
-      file.parent.createSync(recursive: true);
-    }
-
-    final jsonString = const JsonEncoder.withIndent(
-      '  ',
-    ).convert(schemes.map((s) => s.toJson()).toList());
-    file.writeAsStringSync(jsonString, flush: true);
+    return schemes;
   }
 }

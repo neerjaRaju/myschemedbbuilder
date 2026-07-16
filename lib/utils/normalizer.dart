@@ -1,76 +1,163 @@
 import 'package:html/parser.dart' show parse;
 
+/// Text, date, URL and phone-number normalization used by the extractor,
+/// validators and dataset builder.
 class Normalizer {
-  /// Cleans whitespace, removes HTML tags, normalizes Unicode accents, and trims output.
+  Normalizer._();
+
+  static final RegExp _whitespace = RegExp(r'\s+');
+  static final RegExp _bulletChars =
+      RegExp('[\\u2022\\u25cf\\u25aa\\u2043\\u00b7]');
+  static final RegExp _invisibleChars =
+      RegExp('[\\u200b\\u200c\\u200d\\ufeff\\u00ad]');
+  static final RegExp _isoDate = RegExp(r'^(\d{4})-(\d{2})-(\d{2})');
+  static final RegExp _dmyDate =
+      RegExp(r'^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})$');
+  static final RegExp _monthNameDate = RegExp(
+    r'^(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]+)[,]?\s+(\d{4})$',
+  );
+  static final RegExp _nameMonthDate =
+      RegExp(r'^([A-Za-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?[,]?\s+(\d{4})$');
+  static final RegExp _trackingParam = RegExp(r'^(utm_|fbclid|gclid)');
+
+  static const Map<String, int> _months = {
+    'jan': 1, 'january': 1,
+    'feb': 2, 'february': 2,
+    'mar': 3, 'march': 3,
+    'apr': 4, 'april': 4,
+    'may': 5,
+    'jun': 6, 'june': 6,
+    'jul': 7, 'july': 7,
+    'aug': 8, 'august': 8,
+    'sep': 9, 'sept': 9, 'september': 9,
+    'oct': 10, 'october': 10,
+    'nov': 11, 'november': 11,
+    'dec': 12, 'december': 12,
+  };
+
+  /// Strips HTML markup and entities, removes invisible unicode characters,
+  /// replaces non-breaking spaces and bullet glyphs, and collapses whitespace.
   static String sanitizeText(String input) {
     if (input.isEmpty) return '';
 
-    // Parse HTML entities and extract text
+    // Decode HTML entities and drop tags.
     final document = parse(input);
-    String text = document.body?.text ?? input;
+    var text = document.body?.text ?? input;
 
-    // Normalize Unicode forms (NFKC)
-    text = Uri.decodeComponent(Uri.encodeComponent(text));
+    text = text
+        .replaceAll(' ', ' ')
+        .replaceAll(_invisibleChars, '')
+        .replaceAll(_bulletChars, ' ');
 
-    // Clean excessive whitespaces and line endings
-    return text.replaceAll(RegExp(r'\s+'), ' ').trim();
+    return text.replaceAll(_whitespace, ' ').trim();
   }
 
-  /// Converts complex raw HTML lists or text block lists into standardized clean Markdown lists.
+  /// Converts raw list items into a deterministic Markdown bullet list.
   static String normalizeList(List<String> items) {
     return items
-        .map((item) => sanitizeText(item))
+        .map(sanitizeText)
         .where((item) => item.isNotEmpty)
         .map((item) => '* $item')
         .join('\n');
   }
 
-  /// Extracts and formats Indian standard contact formats into structural string tokens.
+  /// Formats Indian phone numbers as `+91-XXXXXXXXXX`; other values
+  /// (short codes, toll-free strings) are returned sanitized.
   static String normalizeHelpline(String input) {
-    String digits = input.replaceAll(RegExp(r'\D'), '');
+    final digits = input.replaceAll(RegExp(r'\D'), '');
     if (digits.length == 10) {
       return '+91-$digits';
-    } else if (digits.length == 12 && digits.startsWith('91')) {
+    }
+    if (digits.length == 12 && digits.startsWith('91')) {
       return '+91-${digits.substring(2)}';
     }
-    return sanitizeText(
-      input,
-    ); // Return clean raw version if it's a shortcode or custom toll-free string
+    return sanitizeText(input);
   }
 
-  /// Parses diverse local date strings into deterministic ISO 8601 strings (`YYYY-MM-DD`).
+  /// Parses common Indian-government date formats into ISO 8601
+  /// (`YYYY-MM-DD`). Returns an empty string when the input cannot be parsed
+  /// so downstream output stays deterministic.
   static String normalizeDate(String input) {
-    try {
-      final clean = input.trim();
-      // Handle standard DD/MM/YYYY
-      final dmyRegex = RegExp(r'^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$');
-      if (dmyRegex.hasMatch(clean)) {
-        final match = dmyRegex.firstMatch(clean)!;
-        final day = match.group(1)!.padLeft(2, '0');
-        final month = match.group(2)!.padLeft(2, '0');
-        final year = match.group(3);
-        return '$year-$month-$day';
-      }
+    final clean = sanitizeText(input);
+    if (clean.isEmpty) return '';
 
-      // Fallback to core DateTime parsing
-      final parsed = DateTime.parse(clean);
-      return parsed.toIso8601String().substring(0, 10);
-    } catch (_) {
-      // Default to epoch or current placeholder standard if entirely unparseable
-      return DateTime.now().toIso8601String().substring(0, 10);
+    final iso = _isoDate.firstMatch(clean);
+    if (iso != null) {
+      return _validated(iso.group(1)!, iso.group(2)!, iso.group(3)!);
     }
+
+    final dmy = _dmyDate.firstMatch(clean);
+    if (dmy != null) {
+      return _validated(dmy.group(3)!, dmy.group(2)!, dmy.group(1)!);
+    }
+
+    final dMonY = _monthNameDate.firstMatch(clean);
+    if (dMonY != null) {
+      final month = _months[dMonY.group(2)!.toLowerCase()];
+      if (month != null) {
+        return _validated(dMonY.group(3)!, '$month', dMonY.group(1)!);
+      }
+    }
+
+    final monDY = _nameMonthDate.firstMatch(clean);
+    if (monDY != null) {
+      final month = _months[monDY.group(1)!.toLowerCase()];
+      if (month != null) {
+        return _validated(monDY.group(3)!, '$month', monDY.group(2)!);
+      }
+    }
+
+    final parsed = DateTime.tryParse(clean);
+    if (parsed != null) {
+      return parsed.toIso8601String().substring(0, 10);
+    }
+    return '';
   }
 
-  /// Normalizes canonical URL shapes.
+  static String _validated(String year, String month, String day) {
+    final y = int.parse(year);
+    final m = int.parse(month);
+    final d = int.parse(day);
+    if (m < 1 || m > 12 || d < 1 || d > 31) return '';
+    final mm = '$m'.padLeft(2, '0');
+    final dd = '$d'.padLeft(2, '0');
+    return '$y-$mm-$dd';
+  }
+
+  /// Canonicalizes a URL for de-duplication: lowercases the scheme and host,
+  /// removes fragments, tracking parameters, default ports and trailing
+  /// slashes. Returns an empty string for unusable input.
   static String normalizeUrl(String input) {
-    try {
-      final uri = Uri.parse(input.trim().toLowerCase());
-      if (!uri.hasScheme) {
-        return 'https://${uri.toString()}';
-      }
-      return uri.toString();
-    } catch (_) {
-      return '';
+    final raw = input.trim();
+    if (raw.isEmpty) return '';
+
+    var candidate = raw;
+    if (!candidate.contains('://')) {
+      candidate = 'https://$candidate';
     }
+
+    final uri = Uri.tryParse(candidate);
+    if (uri == null || uri.host.isEmpty) return '';
+
+    final query = Map.of(uri.queryParameters)
+      ..removeWhere((key, _) => _trackingParam.hasMatch(key));
+
+    var path = uri.path;
+    if (path.length > 1 && path.endsWith('/')) {
+      path = path.substring(0, path.length - 1);
+    }
+
+    final normalized = Uri(
+      scheme: uri.scheme.toLowerCase(),
+      host: uri.host.toLowerCase(),
+      port: uri.hasPort &&
+              !((uri.scheme == 'https' && uri.port == 443) ||
+                  (uri.scheme == 'http' && uri.port == 80))
+          ? uri.port
+          : null,
+      path: path,
+      queryParameters: query.isEmpty ? null : query,
+    );
+    return normalized.toString();
   }
 }

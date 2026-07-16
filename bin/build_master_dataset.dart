@@ -1,78 +1,79 @@
 import 'dart:io';
-import '../lib/models/scheme.dart';
-import '../lib/parser/json_parser.dart';
-import '../lib/validator/scheme_validator.dart';
-import '../lib/validator/duplicate_validator.dart';
 
+import 'package:government_scheme_db_builder/exporter/json_exporter.dart';
+import 'package:government_scheme_db_builder/models/scheme.dart';
+import 'package:government_scheme_db_builder/parser/json_parser.dart';
+import 'package:government_scheme_db_builder/utils/constants.dart';
+import 'package:government_scheme_db_builder/utils/logger.dart';
+import 'package:government_scheme_db_builder/validator/duplicate_validator.dart';
+import 'package:government_scheme_db_builder/validator/scheme_validator.dart';
+
+/// Merges every generated crawler dataset into the validated, de-duplicated,
+/// deterministically sorted master dataset at
+/// `data/processed/schemes_master.json`.
 void main() {
-  final Directory generatedDir = Directory('data/generated');
-  final String masterOutputPath = 'data/processed/schemes_master.json';
+  const logger = SimpleLogger(name: 'master-dataset');
+  final generatedDir = Directory(kGeneratedDir);
 
   if (!generatedDir.existsSync()) {
-    print('Error: Generated data directory "data/generated" does not exist.');
+    logger.error('Generated data directory "$kGeneratedDir" does not exist.');
     exit(1);
   }
 
-  print('==================================================');
-  print('Starting Master Dataset Compiler');
-  print('==================================================');
+  logger.info('Starting master dataset compiler');
 
-  final List<Scheme> allSchemes = [];
-  final List<String> errorLog = [];
-  final List<String> deduplicationLog = [];
+  // 1. Merge every crawler output.
+  final allSchemes = <Scheme>[];
+  final inputFiles = generatedDir
+      .listSync()
+      .whereType<File>()
+      .where((f) => f.path.endsWith('.json'))
+      .toList()
+    ..sort((a, b) => a.path.compareTo(b.path));
 
-  // 1. Scan and parse all crawler outputs
-  final List<FileSystemEntity> files = generatedDir.listSync();
-  for (var file in files) {
-    if (file is File && file.path.endsWith('.json')) {
-      print('Reading generated file: ${file.path}');
-      final schemes = JsonParser.parseFile(file.path);
-      allSchemes.addAll(schemes);
-    }
+  for (final file in inputFiles) {
+    final schemes = JsonParser.parseFile(file.path);
+    logger.info('Read ${schemes.length} records from ${file.path}');
+    allSchemes.addAll(schemes);
   }
+  logger.info('Total raw records loaded: ${allSchemes.length}');
 
-  print('\nTotal raw records loaded: ${allSchemes.length}');
-
-  // 2. Schema validation
-  print('Validating records...');
-  final List<Scheme> validatedSchemes = [];
-  for (var scheme in allSchemes) {
-    if (SchemeValidator.isValid(scheme, errorLog)) {
-      validatedSchemes.add(scheme);
-    }
-  }
+  // 2. Validate.
+  final errorLog = <String>[];
+  final validatedSchemes = allSchemes
+      .where((scheme) => SchemeValidator.isValid(scheme, errorLog))
+      .toList();
 
   if (errorLog.isNotEmpty) {
-    print('Validation report (${errorLog.length} warnings/errors detected):');
-    errorLog.take(15).forEach((err) => print('  - $err'));
-    if (errorLog.length > 15)
-      print('  - ... and ${errorLog.length - 15} more.');
+    logger.warn('Validation rejected records (${errorLog.length} issues):');
+    for (final error in errorLog.take(15)) {
+      logger.warn('  - $error');
+    }
+    if (errorLog.length > 15) {
+      logger.warn('  - ... and ${errorLog.length - 15} more.');
+    }
   }
+  logger.info('Valid records: ${validatedSchemes.length}');
 
-  // 3. De-duplicate across different sources using our multi-criteria validator
-  print('\nDeduplicating and resolving similarities...');
-  final List<Scheme> uniqueSchemes = DuplicateValidator.deduplicate(
-    validatedSchemes,
-    deduplicationLog,
-  );
+  // 3. De-duplicate across sources.
+  final deduplicationLog = <String>[];
+  final uniqueSchemes =
+      DuplicateValidator.deduplicate(validatedSchemes, deduplicationLog);
 
   if (deduplicationLog.isNotEmpty) {
-    print(
-      'Deduplication actions log (${deduplicationLog.length} resolved collisions):',
-    );
-    deduplicationLog.take(10).forEach((log) => print('  - $log'));
-    if (deduplicationLog.length > 10)
-      print('  - ... and ${deduplicationLog.length - 10} more.');
+    logger.info('Removed ${deduplicationLog.length} duplicates:');
+    for (final entry in deduplicationLog.take(10)) {
+      logger.info('  - $entry');
+    }
+    if (deduplicationLog.length > 10) {
+      logger.info('  - ... and ${deduplicationLog.length - 10} more.');
+    }
   }
 
-  // 4. Sort deterministically by ID
-  uniqueSchemes.sort((a, b) => a.id.compareTo(b.id));
-
-  // 5. Write to master output path
-  print(
-    '\nWriting master dataset containing ${uniqueSchemes.length} clean records...',
+  // 4. Deterministic sort + write (JsonExporter sorts by id).
+  JsonExporter.export(kMasterDatasetPath, uniqueSchemes);
+  logger.info(
+    'Master dataset with ${uniqueSchemes.length} records written to '
+    '$kMasterDatasetPath',
   );
-  JsonParser.writeToFile(masterOutputPath, uniqueSchemes);
-
-  print('Master compilation complete. File saved to: $masterOutputPath');
 }

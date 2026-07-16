@@ -1,0 +1,28 @@
+{
+  "name": "state",
+  "seed_urls": [
+    "https://mahadbt.maharashtra.gov.in/SchemeData/SchemeData",
+    "https://sje.rajasthan.gov.in/schemes/schemes.aspx",
+    "https://schemes.kerala.gov.in/schemes.php",
+    "https://edistrict.delhigovt.nic.in/in/en/CurrentSchemes.html",
+    "https://socialwelfare.uk.gov.in/pages/display/94-schemes",
+    "https://wcd.tripura.gov.in/schemes",
+    "https://myschemes.gujarat.gov.in/all-schemes.aspx"
+  ],
+  "sitemap_urls": [],
+  "url_allow_pattern": "^https://[a-z0-9.-]+\\.(gov\\.in|nic\\.in)/.*(scheme|yojana|Scheme)",
+  "detail_url_pattern": "^https://[a-z0-9.-]+\\.(gov\\.in|nic\\.in)/.*(scheme|yojana|Scheme)",
+  "default_state": "",
+  "default_ministry": "",
+  "requests_per_second": 2,
+  "max_pages": 3000,
+  "state_by_domain": {
+    "maharashtra.gov.in": "Maharashtra",
+    "rajasthan.gov.in": "Rajasthan",
+    "kerala.gov.in": "Kerala",
+    "delhigovt.nic.in": "Delhi",
+    "uk.gov.in": "Uttarakhand",
+    "tripura.gov.in": "Tripura",
+    "gujarat.gov.in": "Gujarat"
+  }
+}
