@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import '../utils/constants.dart';
+
 /// Declarative crawl configuration for one official source portal, loaded
 /// from a JSON file in the top-level `sources/` directory.
 class SourceConfig {
@@ -41,6 +43,11 @@ class SourceConfig {
   /// (see `MySchemeApiConfig`); `null` when the source is HTML-only.
   final Map<String, dynamic>? api;
 
+  /// User-Agent sent with every request to this source. Some government
+  /// gateways reject non-browser agents with HTTP 403, so portals that
+  /// require it can be configured with a browser User-Agent.
+  final String userAgent;
+
   const SourceConfig({
     required this.name,
     required this.seedUrls,
@@ -53,6 +60,7 @@ class SourceConfig {
     this.maxPages,
     this.stateByDomain = const {},
     this.api,
+    this.userAgent = kUserAgent,
   });
 
   factory SourceConfig.fromJson(Map<String, dynamic> json) {
@@ -74,6 +82,7 @@ class SourceConfig {
       api: json['api'] is Map
           ? Map<String, dynamic>.from(json['api'] as Map)
           : null,
+      userAgent: json['user_agent'] as String? ?? kUserAgent,
     );
   }
 

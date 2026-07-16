@@ -47,9 +47,9 @@ class CrawlRunner {
       maxRequests: config.requestsPerSecond,
       interval: const Duration(seconds: 1),
     );
-    final downloader = HtmlDownloader();
-    final robotsChecker = RobotsChecker();
-    final rawDownloader = Downloader();
+    final downloader = HtmlDownloader(userAgent: config.userAgent);
+    final robotsChecker = RobotsChecker(userAgent: config.userAgent);
+    final rawDownloader = Downloader(userAgent: config.userAgent);
 
     // A non-empty pending set means the previous run was interrupted; merge
     // with the existing output so partially crawled data is not lost.
@@ -106,8 +106,11 @@ class CrawlRunner {
   }
 
   /// Seeds from the config plus any URLs discovered through sitemaps.
+  ///
+  /// Explicit seed URLs are trusted as-is; only sitemap-discovered URLs are
+  /// filtered through the source's allow pattern.
   Future<List<String>> _discoverSeedUrls(Downloader downloader) async {
-    final urls = <String>[...config.seedUrls];
+    final discovered = <String>[];
 
     for (final sitemapUrl in config.sitemapUrls) {
       try {
@@ -122,12 +125,12 @@ class CrawlRunner {
           if (loc.endsWith('.xml')) {
             try {
               final nested = await downloader.fetchString(loc);
-              urls.addAll(parseSitemapLocs(nested));
+              discovered.addAll(parseSitemapLocs(nested));
             } on Exception catch (e) {
               logger.warn('Failed to fetch nested sitemap $loc: $e');
             }
           } else {
-            urls.add(loc);
+            discovered.add(loc);
           }
         }
         logger.info('Discovered ${locs.length} URLs from $sitemapUrl');
@@ -136,7 +139,10 @@ class CrawlRunner {
       }
     }
 
-    return urls.where((url) => config.allowRegExp.hasMatch(url)).toList();
+    return [
+      ...config.seedUrls,
+      ...discovered.where((url) => config.allowRegExp.hasMatch(url)),
+    ];
   }
 
   Future<List<String>> _handlePage(

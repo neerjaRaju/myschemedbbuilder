@@ -1,21 +1,18 @@
 {
   "name": "state",
   "seed_urls": [
-    "https://mahadbt.maharashtra.gov.in/SchemeData/SchemeData",
-    "https://sje.rajasthan.gov.in/schemes/schemes.aspx",
-    "https://schemes.kerala.gov.in/schemes.php",
-    "https://edistrict.delhigovt.nic.in/in/en/CurrentSchemes.html",
-    "https://socialwelfare.uk.gov.in/pages/display/94-schemes",
-    "https://wcd.tripura.gov.in/schemes",
-    "https://myschemes.gujarat.gov.in/all-schemes.aspx"
+    "https://sje.rajasthan.gov.in/Default.aspx?PageID=2",
+    "https://sje.rajasthan.gov.in/SchemeDetails.aspx",
+    "https://mahadbt.maharashtra.gov.in/SchemeData/SchemeData"
   ],
   "sitemap_urls": [],
-  "url_allow_pattern": "^https://[a-z0-9.-]+\\.(gov\\.in|nic\\.in)/.*(scheme|yojana|Scheme)",
-  "detail_url_pattern": "^https://[a-z0-9.-]+\\.(gov\\.in|nic\\.in)/.*(scheme|yojana|Scheme)",
+  "url_allow_pattern": "^https://[a-z0-9.-]+\\.(gov|nic)\\.in/.*([Ss]cheme|[Yy]ojana|PageID=)",
+  "detail_url_pattern": "^https://[a-z0-9.-]+\\.(gov|nic)\\.in/.*([Ss]cheme|[Yy]ojana)",
   "default_state": "",
   "default_ministry": "",
   "requests_per_second": 2,
   "max_pages": 3000,
+  "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
   "state_by_domain": {
     "maharashtra.gov.in": "Maharashtra",
     "rajasthan.gov.in": "Rajasthan",

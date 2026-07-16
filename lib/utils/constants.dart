@@ -32,8 +32,9 @@ const String kDatabasePath = '$kOutputDir/schemes.db';
 /// Directory containing per-source crawl configuration files.
 const String kSourcesDir = 'sources';
 
-/// Default HTTP request timeout.
-const Duration kHttpTimeout = Duration(seconds: 30);
+/// Default HTTP request timeout. Some government portals are slow to
+/// respond from data-center IPs, so this is deliberately generous.
+const Duration kHttpTimeout = Duration(seconds: 45);
 
 /// Default cache time-to-live. Pages younger than this are not re-fetched,
 /// which is what makes repeated crawls incremental.

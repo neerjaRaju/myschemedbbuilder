@@ -2,7 +2,7 @@
   "name": "india_gov",
   "seed_urls": [
     "https://www.india.gov.in/my-government/schemes",
-    "https://www.india.gov.in/schemes-0"
+    "https://www.india.gov.in/my-government/schemes/search?pagenumber=1"
   ],
   "sitemap_urls": [],
   "url_allow_pattern": "^https://www\\.india\\.gov\\.in/(my-government/schemes|schemes|spotlight/)",
@@ -10,5 +10,6 @@
   "default_state": "Central",
   "default_ministry": "",
   "requests_per_second": 3,
-  "max_pages": 5000
+  "max_pages": 5000,
+  "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
 }
