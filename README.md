@@ -5,6 +5,11 @@ schemes from [MyScheme](https://www.myscheme.gov.in), the Government of
 India's official scheme portal, which covers both central and state
 schemes.
 
+The repository also contains a Flutter app (in [`app/`](app/)) that
+downloads this database and provides offline browsing, search, smart
+filters, an eligibility checker, bookmarks, comparison and 11 languages.
+See [`app/README.md`](app/README.md).
+
 ## Pipeline
 
 ```

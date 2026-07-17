@@ -13,6 +13,12 @@
 
 include: package:lints/recommended.yaml
 
+analyzer:
+  exclude:
+    # The Flutter app is its own package with its own analysis options and
+    # requires the Flutter SDK; CI analyzes it separately.
+    - app/**
+
 # Uncomment the following section to specify additional rules.
 
 # linter:
