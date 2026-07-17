@@ -67,14 +67,74 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _ReadyHome extends StatelessWidget {
+/// Tab shell with system back-button handling: pressing back on any tab
+/// returns to the Home tab first; pressing back on Home exits the app.
+class _ReadyHome extends StatefulWidget {
   final S s;
 
   const _ReadyHome({required this.s});
 
   @override
+  State<_ReadyHome> createState() => _ReadyHomeState();
+}
+
+class _ReadyHomeState extends State<_ReadyHome> {
+  int _tabIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = widget.s;
+    return PopScope(
+      canPop: _tabIndex == 0,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) setState(() => _tabIndex = 0);
+      },
+      child: Scaffold(
+        body: IndexedStack(
+          index: _tabIndex,
+          children: const [
+            _HomeTab(),
+            EligibilityScreen(),
+            BookmarksScreen(),
+            CompareScreen(),
+          ],
+        ),
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: _tabIndex,
+          onDestinationSelected: (index) => setState(() => _tabIndex = index),
+          destinations: [
+            NavigationDestination(
+              icon: const Icon(Icons.home_outlined),
+              selectedIcon: const Icon(Icons.home),
+              label: s.get('home'),
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.checklist),
+              label: s.get('eligibility'),
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.bookmark_outline),
+              selectedIcon: const Icon(Icons.bookmark),
+              label: s.get('bookmarks'),
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.compare_arrows),
+              label: s.get('compare'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeTab extends StatelessWidget {
+  const _HomeTab();
+
+  @override
   Widget build(BuildContext context) {
     final state = context.watch<AppState>();
+    final s = S.of(context);
     final repo = state.repository;
     final notificationCount = state.store.notifications.length;
 
@@ -174,43 +234,6 @@ class _ReadyHome extends StatelessWidget {
             const SizedBox(height: 24),
           ],
         ),
-      ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: 0,
-        onDestinationSelected: (index) {
-          switch (index) {
-            case 1:
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const EligibilityScreen()),
-              );
-            case 2:
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const BookmarksScreen()),
-              );
-            case 3:
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const CompareScreen()),
-              );
-          }
-        },
-        destinations: [
-          NavigationDestination(
-            icon: const Icon(Icons.home_outlined),
-            label: s.get('home'),
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.checklist),
-            label: s.get('eligibility'),
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.bookmark_outline),
-            label: s.get('bookmarks'),
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.compare_arrows),
-            label: s.get('compare'),
-          ),
-        ],
       ),
     );
   }
