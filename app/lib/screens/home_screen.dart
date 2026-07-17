@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../app_state.dart';
 import '../l10n/strings.dart';
 import '../logic/categories.dart';
+import '../models/scheme.dart';
 import '../widgets/scheme_rail.dart';
 import 'bookmarks_screen.dart';
 import 'compare_screen.dart';
@@ -120,6 +121,7 @@ class _ReadyHomeState extends State<_ReadyHome> {
         if (!didPop) _onBackPressed();
       },
       child: Scaffold(
+        extendBody: true,
         body: IndexedStack(
           index: _tabIndex,
           children: const [
@@ -129,29 +131,41 @@ class _ReadyHomeState extends State<_ReadyHome> {
             CompareScreen(),
           ],
         ),
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: _tabIndex,
-          onDestinationSelected: (index) => setState(() => _tabIndex = index),
-          destinations: [
-            NavigationDestination(
-              icon: const Icon(Icons.home_outlined),
-              selectedIcon: const Icon(Icons.home),
-              label: s.get('home'),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+          child: Material(
+            elevation: 6,
+            shadowColor: Colors.black26,
+            borderRadius: BorderRadius.circular(28),
+            clipBehavior: Clip.antiAlias,
+            child: NavigationBar(
+              height: 68,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              selectedIndex: _tabIndex,
+              onDestinationSelected: (index) =>
+                  setState(() => _tabIndex = index),
+              destinations: [
+                NavigationDestination(
+                  icon: const Icon(Icons.home_outlined),
+                  selectedIcon: const Icon(Icons.home),
+                  label: s.get('home'),
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.checklist),
+                  label: s.get('eligibility'),
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.bookmark_outline),
+                  selectedIcon: const Icon(Icons.bookmark),
+                  label: s.get('bookmarks'),
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.compare_arrows),
+                  label: s.get('compare'),
+                ),
+              ],
             ),
-            NavigationDestination(
-              icon: const Icon(Icons.checklist),
-              label: s.get('eligibility'),
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.bookmark_outline),
-              selectedIcon: const Icon(Icons.bookmark),
-              label: s.get('bookmarks'),
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.compare_arrows),
-              label: s.get('compare'),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -166,36 +180,8 @@ class _HomeTab extends StatelessWidget {
     final state = context.watch<AppState>();
     final s = S.of(context);
     final repo = state.repository;
-    final notificationCount = state.store.notifications.length;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(s.get('appTitle')),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const SearchScreen()),
-            ),
-          ),
-          IconButton(
-            icon: Badge(
-              isLabelVisible: notificationCount > 0,
-              label: Text('$notificationCount'),
-              child: const Icon(Icons.notifications_outlined),
-            ),
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const NotificationsScreen()),
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const SettingsScreen()),
-            ),
-          ),
-        ],
-      ),
       body: RefreshIndicator(
         onRefresh: () async {
           final updated = await state.refreshDatabase();
@@ -208,22 +194,54 @@ class _HomeTab extends StatelessWidget {
           }
         },
         child: ListView(
+          padding: EdgeInsets.only(
+            top: MediaQuery.paddingOf(context).top + 8,
+            bottom: 110,
+          ),
           children: [
+            _Header(s: s),
             _EligibilityBanner(s: s),
-            SchemeRail(title: s.get('featured'), schemes: repo.featured()),
+            SchemeRail(
+              title: s.get('featured'),
+              schemes: repo.featured(),
+              icon: Icons.workspace_premium,
+              iconColor: const Color(0xFF6C4DF0),
+              onViewAll: () => _openResults(
+                context,
+                s.get('featured'),
+                repo.featured(limit: 50),
+              ),
+            ),
             SchemeRail(
               title: s.get('trending'),
               schemes: repo.trending(),
+              icon: Icons.star,
+              iconColor: const Color(0xFFF2A93B),
+              onViewAll: () => _openResults(
+                context,
+                s.get('trending'),
+                repo.trending(limit: 50),
+              ),
             ),
             SchemeRail(
               title: s.get('recentlyUpdated'),
               schemes: repo.recentlyUpdated(),
+              icon: Icons.bolt,
+              iconColor: const Color(0xFF2E86F0),
+              onViewAll: () => _openResults(
+                context,
+                s.get('recentlyUpdated'),
+                repo.recentlyUpdated(limit: 50),
+              ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
               child: Text(
                 s.get('categories'),
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(fontWeight: FontWeight.w700),
               ),
             ),
             GridView.count(
@@ -235,6 +253,7 @@ class _HomeTab extends StatelessWidget {
               children: [
                 for (final category in kCategories)
                   InkWell(
+                    borderRadius: BorderRadius.circular(16),
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) =>
@@ -246,7 +265,14 @@ class _HomeTab extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 26,
-                          child: Icon(category.icon),
+                          backgroundColor: Theme.of(context)
+                              .colorScheme
+                              .primaryContainer
+                              .withValues(alpha: 0.6),
+                          child: Icon(
+                            category.icon,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                         ),
                         const SizedBox(height: 6),
                         Text(
@@ -261,14 +287,138 @@ class _HomeTab extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(height: 24),
           ],
+        ),
+      ),
+    );
+  }
+
+  void _openResults(
+    BuildContext context,
+    String title,
+    List<Scheme> schemes,
+  ) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => SchemeResultsScreen(title: title, schemes: schemes),
+      ),
+    );
+  }
+}
+
+/// Big greeting header with round action buttons, replacing the AppBar.
+class _Header extends StatelessWidget {
+  final S s;
+
+  const _Header({required this.s});
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<AppState>();
+    final hasNotifications = state.store.notifications.isNotEmpty;
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  s.get('appTitle'),
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  s.get('appSubtitle'),
+                  style: theme.textTheme.bodySmall
+                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                ),
+              ],
+            ),
+          ),
+          _RoundAction(
+            icon: Icons.search,
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const SearchScreen()),
+            ),
+          ),
+          _RoundAction(
+            icon: Icons.notifications_none,
+            showDot: hasNotifications,
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+            ),
+          ),
+          _RoundAction(
+            icon: Icons.person_outline,
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const SettingsScreen()),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RoundAction extends StatelessWidget {
+  final IconData icon;
+  final bool showDot;
+  final VoidCallback onTap;
+
+  const _RoundAction({
+    required this.icon,
+    required this.onTap,
+    this.showDot = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8),
+      child: Material(
+        color: Theme.of(context).colorScheme.surface,
+        shape: const CircleBorder(),
+        elevation: 1,
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: onTap,
+          child: SizedBox(
+            width: 44,
+            height: 44,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Icon(icon, size: 22),
+                if (showDot)
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 }
 
+/// Gradient hero card driving users into the eligibility checker.
 class _EligibilityBanner extends StatelessWidget {
   final S s;
 
@@ -276,16 +426,83 @@ class _EligibilityBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      color: Theme.of(context).colorScheme.primaryContainer,
-      child: ListTile(
-        leading: const Icon(Icons.checklist),
-        title: Text(s.get('eligibility')),
-        subtitle: Text(s.get('checkEligibility')),
-        trailing: const Icon(Icons.chevron_right),
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 14, 16, 4),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: isDark
+              ? [const Color(0xFF2A2352), const Color(0xFF3A2E6E)]
+              : [const Color(0xFFEFE9FD), const Color(0xFFE3D9FB)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(22),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(22),
         onTap: () => Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const EligibilityScreen()),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(18),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 34,
+                backgroundColor: theme.colorScheme.surface,
+                child: Icon(
+                  Icons.fact_check_outlined,
+                  size: 34,
+                  color: theme.colorScheme.primary,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      s.get('eligibility'),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      s.get('checkEligibility'),
+                      style: theme.textTheme.bodySmall,
+                    ),
+                    const SizedBox(height: 10),
+                    FilledButton.icon(
+                      style: FilledButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 18,
+                          vertical: 8,
+                        ),
+                        visualDensity: VisualDensity.compact,
+                      ),
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const EligibilityScreen(),
+                        ),
+                      ),
+                      icon: Text(s.get('checkNow')),
+                      label: const Icon(Icons.arrow_forward, size: 16),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.account_balance,
+                size: 64,
+                color: theme.colorScheme.primary.withValues(alpha: 0.35),
+              ),
+            ],
+          ),
         ),
       ),
     );

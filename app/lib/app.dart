@@ -13,7 +13,7 @@ class SchemeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<AppState>();
-    const seedColor = Color(0xFF1A5CA8);
+    const seedColor = Color(0xFF6C4DF0);
     return MaterialApp(
       title: 'My Schemes',
       debugShowCheckedModeBanner: false,
@@ -29,6 +29,7 @@ class SchemeApp extends StatelessWidget {
       ],
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: seedColor),
+        scaffoldBackgroundColor: const Color(0xFFF5F3FC),
         useMaterial3: true,
       ),
       darkTheme: ThemeData(

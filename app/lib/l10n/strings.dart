@@ -29,6 +29,10 @@ class S {
 
   static const Map<String, Map<String, String>> _strings = {
     'en': {
+      'appSubtitle': 'Central & State Government Schemes',
+      'checkNow': 'Check now',
+      'centralGov': 'Central Govt',
+      'stateGov': 'State Govt',
       'exitTitle': 'Exit app?',
       'exitMessage': 'Do you want to close the app?',
       'exit': 'Exit',
@@ -110,6 +114,10 @@ class S {
       'skillDevelopment': 'Skill Development',
     },
     'hi': {
+      'appSubtitle': 'भारत सरकार एवं राज्य सरकार की योजनाएँ',
+      'checkNow': 'अब जाँचें',
+      'centralGov': 'केंद्र सरकार',
+      'stateGov': 'राज्य सरकार',
       'exitTitle': 'ऐप बंद करें?',
       'exitMessage': 'क्या आप ऐप बंद करना चाहते हैं?',
       'exit': 'बंद करें',
@@ -191,6 +199,10 @@ class S {
       'skillDevelopment': 'कौशल विकास',
     },
     'ta': {
+      'appSubtitle': 'மத்திய & மாநில அரசு திட்டங்கள்',
+      'checkNow': 'இப்போது சரிபார்க்கவும்',
+      'centralGov': 'மத்திய அரசு',
+      'stateGov': 'மாநில அரசு',
       'exitTitle': 'செயலியை மூடவா?',
       'exitMessage': 'செயலியை மூட விரும்புகிறீர்களா?',
       'exit': 'மூடு',
@@ -272,6 +284,10 @@ class S {
       'skillDevelopment': 'திறன் மேம்பாடு',
     },
     'te': {
+      'appSubtitle': 'కేంద్ర & రాష్ట్ర ప్రభుత్వ పథకాలు',
+      'checkNow': 'ఇప్పుడే తనిఖీ చేయండి',
+      'centralGov': 'కేంద్ర ప్రభుత్వం',
+      'stateGov': 'రాష్ట్ర ప్రభుత్వం',
       'exitTitle': 'యాప్ మూసివేయాలా?',
       'exitMessage': 'మీరు యాప్ మూసివేయాలనుకుంటున్నారా?',
       'exit': 'మూసివేయి',
@@ -353,6 +369,10 @@ class S {
       'skillDevelopment': 'నైపుణ్యాభివృద్ధి',
     },
     'mr': {
+      'appSubtitle': 'केंद्र व राज्य सरकारच्या योजना',
+      'checkNow': 'आता तपासा',
+      'centralGov': 'केंद्र सरकार',
+      'stateGov': 'राज्य सरकार',
       'exitTitle': 'अ‍ॅप बंद करायचे?',
       'exitMessage': 'तुम्हाला अ‍ॅप बंद करायचे आहे का?',
       'exit': 'बंद करा',
@@ -434,6 +454,10 @@ class S {
       'skillDevelopment': 'कौशल्य विकास',
     },
     'bn': {
+      'appSubtitle': 'কেন্দ্রীয় ও রাজ্য সরকারের প্রকল্প',
+      'checkNow': 'এখনই যাচাই করুন',
+      'centralGov': 'কেন্দ্রীয় সরকার',
+      'stateGov': 'রাজ্য সরকার',
       'exitTitle': 'অ্যাপ বন্ধ করবেন?',
       'exitMessage': 'আপনি কি অ্যাপ বন্ধ করতে চান?',
       'exit': 'বন্ধ করুন',
@@ -515,6 +539,10 @@ class S {
       'skillDevelopment': 'দক্ষতা উন্নয়ন',
     },
     'gu': {
+      'appSubtitle': 'કેન્દ્ર અને રાજ્ય સરકારની યોજનાઓ',
+      'checkNow': 'હમણાં તપાસો',
+      'centralGov': 'કેન્દ્ર સરકાર',
+      'stateGov': 'રાજ્ય સરકાર',
       'exitTitle': 'ઍપ બંધ કરીએ?',
       'exitMessage': 'શું તમે ઍપ બંધ કરવા માંગો છો?',
       'exit': 'બંધ કરો',
@@ -596,6 +624,10 @@ class S {
       'skillDevelopment': 'કૌશલ્ય વિકાસ',
     },
     'kn': {
+      'appSubtitle': 'ಕೇಂದ್ರ ಮತ್ತು ರಾಜ್ಯ ಸರ್ಕಾರದ ಯೋಜನೆಗಳು',
+      'checkNow': 'ಈಗ ಪರಿಶೀಲಿಸಿ',
+      'centralGov': 'ಕೇಂದ್ರ ಸರ್ಕಾರ',
+      'stateGov': 'ರಾಜ್ಯ ಸರ್ಕಾರ',
       'exitTitle': 'ಆ್ಯಪ್ ಮುಚ್ಚಬೇಕೆ?',
       'exitMessage': 'ನೀವು ಆ್ಯಪ್ ಮುಚ್ಚಲು ಬಯಸುವಿರಾ?',
       'exit': 'ಮುಚ್ಚಿ',
@@ -677,6 +709,10 @@ class S {
       'skillDevelopment': 'ಕೌಶಲ್ಯಾಭಿವೃದ್ಧಿ',
     },
     'ml': {
+      'appSubtitle': 'കേന്ദ്ര-സംസ്ഥാന സർക്കാർ പദ്ധതികൾ',
+      'checkNow': 'ഇപ്പോൾ പരിശോധിക്കുക',
+      'centralGov': 'കേന്ദ്ര സർക്കാർ',
+      'stateGov': 'സംസ്ഥാന സർക്കാർ',
       'exitTitle': 'ആപ്പ് അടയ്ക്കണോ?',
       'exitMessage': 'നിങ്ങൾ ആപ്പ് അടയ്ക്കാൻ ആഗ്രഹിക്കുന്നുവോ?',
       'exit': 'അടയ്ക്കുക',
@@ -758,6 +794,10 @@ class S {
       'skillDevelopment': 'നൈപുണ്യ വികസനം',
     },
     'pa': {
+      'appSubtitle': 'ਕੇਂਦਰ ਅਤੇ ਰਾਜ ਸਰਕਾਰ ਦੀਆਂ ਯੋਜਨਾਵਾਂ',
+      'checkNow': 'ਹੁਣੇ ਜਾਂਚੋ',
+      'centralGov': 'ਕੇਂਦਰ ਸਰਕਾਰ',
+      'stateGov': 'ਰਾਜ ਸਰਕਾਰ',
       'exitTitle': 'ਐਪ ਬੰਦ ਕਰੀਏ?',
       'exitMessage': 'ਕੀ ਤੁਸੀਂ ਐਪ ਬੰਦ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?',
       'exit': 'ਬੰਦ ਕਰੋ',
@@ -839,6 +879,10 @@ class S {
       'skillDevelopment': 'ਹੁਨਰ ਵਿਕਾਸ',
     },
     'or': {
+      'appSubtitle': 'କେନ୍ଦ୍ର ଓ ରାଜ୍ୟ ସରକାରଙ୍କ ଯୋଜନା',
+      'checkNow': 'ବର୍ତ୍ତମାନ ଯାଞ୍ଚ କରନ୍ତୁ',
+      'centralGov': 'କେନ୍ଦ୍ର ସରକାର',
+      'stateGov': 'ରାଜ୍ୟ ସରକାର',
       'exitTitle': 'ଆପ୍ ବନ୍ଦ କରିବେ?',
       'exitMessage': 'ଆପଣ ଆପ୍ ବନ୍ଦ କରିବାକୁ ଚାହୁଁଛନ୍ତି କି?',
       'exit': 'ବନ୍ଦ କରନ୍ତୁ',

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../app_state.dart';
+import '../l10n/strings.dart';
 import '../models/scheme.dart';
 import '../screens/scheme_detail_screen.dart';
 
@@ -42,7 +43,11 @@ class SchemeCard extends StatelessWidget {
               spacing: 4,
               children: [
                 Chip(
-                  label: Text(scheme.isCentral ? 'Central' : scheme.state),
+                  label: Text(
+                    scheme.isCentral
+                        ? S.of(context).get('centralGov')
+                        : scheme.state,
+                  ),
                   visualDensity: VisualDensity.compact,
                   padding: EdgeInsets.zero,
                 ),
