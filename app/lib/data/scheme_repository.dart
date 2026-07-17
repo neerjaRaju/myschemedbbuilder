@@ -41,7 +41,8 @@ class SchemeRepository {
   }
 
   List<Scheme> byIds(List<String> ids) {
-    if (ids.isEmpty) return const [];
+    // Growable so callers can freely sort the result.
+    if (ids.isEmpty) return <Scheme>[];
     final placeholders = List.filled(ids.length, '?').join(',');
     return _query(
       'SELECT $_columns FROM schemes WHERE id IN ($placeholders)',
@@ -132,7 +133,7 @@ class SchemeRepository {
   /// ministry, category, state and tags, ranked by relevance.
   List<Scheme> search(String query, {int limit = 100}) {
     final trimmed = query.trim();
-    if (trimmed.isEmpty) return const [];
+    if (trimmed.isEmpty) return <Scheme>[];
 
     // Quote each term so user punctuation cannot break FTS syntax.
     final ftsQuery = trimmed

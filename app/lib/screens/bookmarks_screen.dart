@@ -13,7 +13,7 @@ class BookmarksScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = context.watch<AppState>();
     final s = S.of(context);
-    final schemes = state.bookmarkedSchemes()
+    final schemes = List.of(state.bookmarkedSchemes())
       ..sort((a, b) => a.title.compareTo(b.title));
 
     return Scaffold(
