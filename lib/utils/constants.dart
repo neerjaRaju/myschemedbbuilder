@@ -8,10 +8,7 @@ const String kUserAgent =
 /// Root data directory.
 const String kDataDir = 'data';
 
-/// Directory for raw downloaded assets (sitemaps, listings).
-const String kRawDir = '$kDataDir/raw';
-
-/// Directory for the persistent HTML page cache.
+/// Directory for the persistent API response cache.
 const String kCacheDir = '$kDataDir/cache';
 
 /// Directory where each crawler writes its generated JSON dataset.
@@ -39,9 +36,6 @@ const Duration kHttpTimeout = Duration(seconds: 45);
 /// Default cache time-to-live. Pages younger than this are not re-fetched,
 /// which is what makes repeated crawls incremental.
 const Duration kCacheTtl = Duration(days: 7);
-
-/// Default number of concurrent download workers per crawler.
-const int kDefaultConcurrency = 4;
 
 /// Number of rows inserted per multi-row SQL statement.
 const int kInsertBatchSize = 250;

@@ -9,7 +9,6 @@ class FileUtils {
   /// Ensures that every data directory used by the pipeline exists.
   static void ensureDirectoriesExist() {
     const directories = [
-      kRawDir,
       kCacheDir,
       kGeneratedDir,
       kProcessedDir,

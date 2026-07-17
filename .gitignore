@@ -13,3 +13,6 @@ data/raw/
 # SQLite side files (the checkpointed .db is the only distributable)
 data/output/*.db-wal
 data/output/*.db-shm
+
+# macOS
+.DS_Store

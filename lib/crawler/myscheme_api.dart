@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import '../exporter/json_exporter.dart';
 import '../extractor/scheme_extractor.dart';
@@ -43,6 +44,18 @@ class MySchemeApiConfig {
       pageSize: json['page_size'] as int? ?? 100,
       requestsPerSecond: json['requests_per_second'] as int? ?? 4,
     );
+  }
+
+  /// Loads the `api` block from a source config file such as
+  /// `sources/myscheme.json`.
+  static MySchemeApiConfig loadFromFile(String path) {
+    final decoded =
+        json.decode(File(path).readAsStringSync()) as Map<String, dynamic>;
+    final block = decoded['api'];
+    if (block is! Map) {
+      throw FormatException('Missing "api" block in $path');
+    }
+    return MySchemeApiConfig.fromJson(Map<String, dynamic>.from(block));
   }
 }
 

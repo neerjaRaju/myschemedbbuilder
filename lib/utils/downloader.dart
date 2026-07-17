@@ -26,8 +26,8 @@ class HttpStatusException implements Exception {
 
 /// Low-level HTTP downloader with timeout and exponential-backoff retries.
 ///
-/// [HtmlDownloader] and the sitemap/raw-asset fetchers build on top of this
-/// class so retry and timeout behavior is defined in exactly one place.
+/// The MyScheme API client builds on top of this class so retry and
+/// timeout behavior is defined in exactly one place.
 class Downloader {
   final String userAgent;
   final Duration timeout;

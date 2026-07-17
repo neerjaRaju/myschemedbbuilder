@@ -24,24 +24,21 @@ dart run bin/build_database.dart        # data/output/schemes.db
 dart run bin/update_database.dart       # incremental sync of an existing db
 ```
 
-## Crawling
+## Data source
 
-Crawl behavior is configured per source in `sources/*.json` (seed URLs,
-sitemaps, URL allow/detail patterns, rate limits, page caps, state-by-domain
-mapping). The crawler provides:
+All data comes from the official MyScheme public JSON API
+(`api.myscheme.gov.in`) — the same endpoints, headers and public API key
+the myscheme.gov.in website itself uses. The crawler:
 
-- persistent resumable URL queue (interrupted crawls continue where they stopped)
-- on-disk page cache with TTL (repeat runs are incremental)
-- robots.txt compliance and per-source rate limiting
-- retry with exponential backoff and jitter
-- concurrent download workers with progress reporting
-- duplicate URL elimination via URL normalization
+- enumerates every scheme slug through the paginated search endpoint
+- fetches each scheme's full detail payload
+- caches API responses on disk with a TTL (repeat runs are incremental)
+- rate-limits requests and retries transient failures with exponential
+  backoff and jitter
+- reports progress as it goes
 
-MyScheme is client-rendered, so its crawler uses the portal's official
-public JSON API (the same endpoints and public API key the website itself
-uses), with HTML crawling as a fallback. Additional HTML-only sources can
-be added by dropping a config file into `sources/` and creating a small
-entrypoint that hands it to `CrawlRunner`.
+Endpoints, API key, page size and rate limit are configured in
+`sources/myscheme.json`.
 
 ## Data quality
 
