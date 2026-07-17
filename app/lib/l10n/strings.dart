@@ -29,6 +29,10 @@ class S {
 
   static const Map<String, Map<String, String>> _strings = {
     'en': {
+      'exitTitle': 'Exit app?',
+      'exitMessage': 'Do you want to close the app?',
+      'exit': 'Exit',
+      'cancel': 'Cancel',
       'appTitle': 'My Schemes',
       'home': 'Home',
       'featured': 'Featured Schemes',
@@ -106,6 +110,10 @@ class S {
       'skillDevelopment': 'Skill Development',
     },
     'hi': {
+      'exitTitle': 'ऐप बंद करें?',
+      'exitMessage': 'क्या आप ऐप बंद करना चाहते हैं?',
+      'exit': 'बंद करें',
+      'cancel': 'रद्द करें',
       'appTitle': 'मेरी योजनाएँ',
       'home': 'होम',
       'featured': 'प्रमुख योजनाएँ',
@@ -183,6 +191,10 @@ class S {
       'skillDevelopment': 'कौशल विकास',
     },
     'ta': {
+      'exitTitle': 'செயலியை மூடவா?',
+      'exitMessage': 'செயலியை மூட விரும்புகிறீர்களா?',
+      'exit': 'மூடு',
+      'cancel': 'ரத்து',
       'appTitle': 'எனது திட்டங்கள்',
       'home': 'முகப்பு',
       'featured': 'சிறப்புத் திட்டங்கள்',
@@ -260,6 +272,10 @@ class S {
       'skillDevelopment': 'திறன் மேம்பாடு',
     },
     'te': {
+      'exitTitle': 'యాప్ మూసివేయాలా?',
+      'exitMessage': 'మీరు యాప్ మూసివేయాలనుకుంటున్నారా?',
+      'exit': 'మూసివేయి',
+      'cancel': 'రద్దు',
       'appTitle': 'నా పథకాలు',
       'home': 'హోమ్',
       'featured': 'ప్రత్యేక పథకాలు',
@@ -337,6 +353,10 @@ class S {
       'skillDevelopment': 'నైపుణ్యాభివృద్ధి',
     },
     'mr': {
+      'exitTitle': 'अ‍ॅप बंद करायचे?',
+      'exitMessage': 'तुम्हाला अ‍ॅप बंद करायचे आहे का?',
+      'exit': 'बंद करा',
+      'cancel': 'रद्द करा',
       'appTitle': 'माझ्या योजना',
       'home': 'मुख्यपृष्ठ',
       'featured': 'वैशिष्ट्यीकृत योजना',
@@ -414,6 +434,10 @@ class S {
       'skillDevelopment': 'कौशल्य विकास',
     },
     'bn': {
+      'exitTitle': 'অ্যাপ বন্ধ করবেন?',
+      'exitMessage': 'আপনি কি অ্যাপ বন্ধ করতে চান?',
+      'exit': 'বন্ধ করুন',
+      'cancel': 'বাতিল',
       'appTitle': 'আমার প্রকল্পসমূহ',
       'home': 'হোম',
       'featured': 'বিশেষ প্রকল্প',
@@ -491,6 +515,10 @@ class S {
       'skillDevelopment': 'দক্ষতা উন্নয়ন',
     },
     'gu': {
+      'exitTitle': 'ઍપ બંધ કરીએ?',
+      'exitMessage': 'શું તમે ઍપ બંધ કરવા માંગો છો?',
+      'exit': 'બંધ કરો',
+      'cancel': 'રદ કરો',
       'appTitle': 'મારી યોજનાઓ',
       'home': 'હોમ',
       'featured': 'વિશેષ યોજનાઓ',
@@ -568,6 +596,10 @@ class S {
       'skillDevelopment': 'કૌશલ્ય વિકાસ',
     },
     'kn': {
+      'exitTitle': 'ಆ್ಯಪ್ ಮುಚ್ಚಬೇಕೆ?',
+      'exitMessage': 'ನೀವು ಆ್ಯಪ್ ಮುಚ್ಚಲು ಬಯಸುವಿರಾ?',
+      'exit': 'ಮುಚ್ಚಿ',
+      'cancel': 'ರದ್ದುಮಾಡಿ',
       'appTitle': 'ನನ್ನ ಯೋಜನೆಗಳು',
       'home': 'ಮುಖಪುಟ',
       'featured': 'ವಿಶೇಷ ಯೋಜನೆಗಳು',
@@ -645,6 +677,10 @@ class S {
       'skillDevelopment': 'ಕೌಶಲ್ಯಾಭಿವೃದ್ಧಿ',
     },
     'ml': {
+      'exitTitle': 'ആപ്പ് അടയ്ക്കണോ?',
+      'exitMessage': 'നിങ്ങൾ ആപ്പ് അടയ്ക്കാൻ ആഗ്രഹിക്കുന്നുവോ?',
+      'exit': 'അടയ്ക്കുക',
+      'cancel': 'റദ്ദാക്കുക',
       'appTitle': 'എന്റെ പദ്ധതികൾ',
       'home': 'ഹോം',
       'featured': 'പ്രത്യേക പദ്ധതികൾ',
@@ -722,6 +758,10 @@ class S {
       'skillDevelopment': 'നൈപുണ്യ വികസനം',
     },
     'pa': {
+      'exitTitle': 'ਐਪ ਬੰਦ ਕਰੀਏ?',
+      'exitMessage': 'ਕੀ ਤੁਸੀਂ ਐਪ ਬੰਦ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?',
+      'exit': 'ਬੰਦ ਕਰੋ',
+      'cancel': 'ਰੱਦ ਕਰੋ',
       'appTitle': 'ਮੇਰੀਆਂ ਯੋਜਨਾਵਾਂ',
       'home': 'ਹੋਮ',
       'featured': 'ਵਿਸ਼ੇਸ਼ ਯੋਜਨਾਵਾਂ',
@@ -799,6 +839,10 @@ class S {
       'skillDevelopment': 'ਹੁਨਰ ਵਿਕਾਸ',
     },
     'or': {
+      'exitTitle': 'ଆପ୍ ବନ୍ଦ କରିବେ?',
+      'exitMessage': 'ଆପଣ ଆପ୍ ବନ୍ଦ କରିବାକୁ ଚାହୁଁଛନ୍ତି କି?',
+      'exit': 'ବନ୍ଦ କରନ୍ତୁ',
+      'cancel': 'ବାତିଲ୍',
       'appTitle': 'ମୋର ଯୋଜନା',
       'home': 'ହୋମ୍',
       'featured': 'ବିଶେଷ ଯୋଜନା',

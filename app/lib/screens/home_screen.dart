@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../app_state.dart';
@@ -68,7 +69,8 @@ class HomeScreen extends StatelessWidget {
 }
 
 /// Tab shell with system back-button handling: pressing back on any tab
-/// returns to the Home tab first; pressing back on Home exits the app.
+/// returns to the Home tab first; on the Home tab a confirmation dialog
+/// asks before closing the app.
 class _ReadyHome extends StatefulWidget {
   final S s;
 
@@ -81,13 +83,41 @@ class _ReadyHome extends StatefulWidget {
 class _ReadyHomeState extends State<_ReadyHome> {
   int _tabIndex = 0;
 
+  Future<void> _onBackPressed() async {
+    if (_tabIndex != 0) {
+      setState(() => _tabIndex = 0);
+      return;
+    }
+    final s = widget.s;
+    final shouldExit = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(s.get('exitTitle')),
+        content: Text(s.get('exitMessage')),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(s.get('cancel')),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(s.get('exit')),
+          ),
+        ],
+      ),
+    );
+    if (shouldExit ?? false) {
+      await SystemNavigator.pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = widget.s;
     return PopScope(
-      canPop: _tabIndex == 0,
+      canPop: false,
       onPopInvokedWithResult: (didPop, _) {
-        if (!didPop) setState(() => _tabIndex = 0);
+        if (!didPop) _onBackPressed();
       },
       child: Scaffold(
         body: IndexedStack(
