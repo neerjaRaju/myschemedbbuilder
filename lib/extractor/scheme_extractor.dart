@@ -148,8 +148,7 @@ class SchemeExtractor {
         _dig(apiResponse, ['data', 'schemeData']));
     if (fields == null) return null;
 
-    final normalizedUrl =
-        Normalizer.normalizeUrl('https://www.myscheme.gov.in/schemes/$slug');
+    final normalizedUrl = Normalizer.normalizeUrl('https://www.myscheme.gov.in/schemes/$slug');
     final id = sha256Hash(normalizedUrl).substring(0, 16);
 
     Map<String, String> faq;

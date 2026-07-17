@@ -43,12 +43,6 @@ jobs:
       - name: Crawl MyScheme
         run: dart run bin/crawl_myscheme.dart
 
-      - name: Crawl india.gov.in
-        run: dart run bin/crawl_india_gov.dart
-
-      - name: Crawl State Portals
-        run: dart run bin/crawl_state.dart
-
       - name: Build Master Dataset
         run: dart run bin/build_master_dataset.dart
 
@@ -64,5 +58,8 @@ jobs:
             echo "No dataset changes to commit."
           else
             git commit -m "automated: weekly schemes database update [skip ci]"
-            git push
+            # The crawl takes a while; main may have moved since checkout.
+            # Rebase our data commit on the latest main before pushing.
+            git pull --rebase origin main
+            git push origin main
           fi

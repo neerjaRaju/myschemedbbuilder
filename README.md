@@ -1,9 +1,9 @@
 # Government Scheme Database Builder
 
 Builds an offline SQLite database (`schemes.db`) of Indian government
-schemes from official sources: [MyScheme](https://www.myscheme.gov.in),
-[india.gov.in](https://www.india.gov.in) and official state government
-scheme portals.
+schemes from [MyScheme](https://www.myscheme.gov.in), the Government of
+India's official scheme portal, which covers both central and state
+schemes.
 
 ## Pipeline
 
@@ -19,9 +19,6 @@ Each stage is a standalone Dart entrypoint:
 dart pub get
 
 dart run bin/crawl_myscheme.dart        # data/generated/myscheme_schemes.json
-dart run bin/crawl_india_gov.dart       # data/generated/india_gov_schemes.json
-dart run bin/crawl_state.dart           # data/generated/state_schemes.json
-
 dart run bin/build_master_dataset.dart  # data/processed/schemes_master.json
 dart run bin/build_database.dart        # data/output/schemes.db
 dart run bin/update_database.dart       # incremental sync of an existing db
@@ -42,7 +39,9 @@ mapping). The crawler provides:
 
 MyScheme is client-rendered, so its crawler uses the portal's official
 public JSON API (the same endpoints and public API key the website itself
-uses), with HTML crawling as a fallback.
+uses), with HTML crawling as a fallback. Additional HTML-only sources can
+be added by dropping a config file into `sources/` and creating a small
+entrypoint that hands it to `CrawlRunner`.
 
 ## Data quality
 
@@ -73,8 +72,10 @@ ORDER BY rank LIMIT 10;
 - `.github/workflows/test.yml` — format check, static analysis and tests on
   every push and pull request.
 - `.github/workflows/build_database.yml` — every Sunday (and on manual
-  dispatch) re-crawls all sources, rebuilds the master dataset and SQLite
-  database, and commits the refreshed artifacts as `github-actions[bot]`.
+  dispatch) re-crawls MyScheme, rebuilds the master dataset and SQLite
+  database, and commits the refreshed artifacts as `github-actions[bot]`
+  (rebasing onto the latest `main` before pushing, since the crawl takes
+  a while and `main` may move mid-run).
 
 ## Development
 
