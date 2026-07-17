@@ -1,18 +1,22 @@
 name: scheme_app
-description: >-
-  Offline-first Indian Government Schemes browser powered by the weekly
-  schemes.db built from the official MyScheme API.
-version: 1.0.0
-publish_to: none
+description: Offline-first Indian Government Schemes browser powered by the weekly schemes.db.
+
+publish_to: "none"
+
+version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+
   flutter_localizations:
     sdk: flutter
+
+  google_fonts: ^6.2.1
+  google_mobile_ads: ^9.0.0
   http: ^1.2.0
   intl: any
   path: ^1.9.0
@@ -22,10 +26,107 @@ dependencies:
   sqlite3: ^2.4.0
   sqlite3_flutter_libs: ^0.5.20
 
+  # Optional Packages
+  cached_network_image: ^3.4.1
+  connectivity_plus: ^6.1.0
+  device_info_plus: ^11.1.0
+  flutter_animate: ^4.5.0
+  flutter_svg: ^2.0.10+1
+  go_router: ^16.0.0
+  package_info_plus: ^8.3.1
+  permission_handler: ^12.0.0+1
+  share_plus: ^11.0.0
+  sqflite: ^2.4.1
+  url_launcher: ^6.3.1
+  flutter_markdown_plus: ^1.0.12
+
 dev_dependencies:
-  flutter_lints: ^4.0.0
   flutter_test:
     sdk: flutter
 
+  flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.0
+
+# --------------------------------------------------
+# Launcher Icons
+#
+# Generate Icons:
+# dart run flutter_launcher_icons
+# --------------------------------------------------
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: assets/icon/icon.png
+  min_sdk_android: 21
+  adaptive_icon_background: "#6C4DF0"
+  adaptive_icon_foreground: assets/icon/icon.png
+
+# --------------------------------------------------
+# Native Splash Screen
+#
+# Generate Splash:
+# dart run flutter_native_splash:create
+# Remove Splash:
+# dart run flutter_native_splash:remove
+# --------------------------------------------------
+
+flutter_native_splash:
+  color: "#6C4DF0"
+  image: assets/icon/icon.png
+
+  android_12:
+    color: "#6C4DF0"
+    image: assets/icon/icon.png
+
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/icon/
+    - assets/images/
+    - assets/db/
+
+# --------------------------------------------------
+# Useful Commands
+# --------------------------------------------------
+#
+# Install packages
+# flutter pub get
+#
+# Upgrade packages
+# flutter pub upgrade
+#
+# Clean project
+# flutter clean
+#
+# Generate Launcher Icons
+# dart run flutter_launcher_icons
+#
+# Generate Splash Screen
+# dart run flutter_native_splash:create
+#
+# Remove Splash Screen
+# dart run flutter_native_splash:remove
+#
+# Analyze
+# flutter analyze
+#
+# Run Tests
+# flutter test
+#
+# Build APK
+# flutter build apk --release
+#
+# Build App Bundle
+# flutter build appbundle --release
+#
+# Build iOS
+# flutter build ios --release
+#
+# Build Web
+# flutter build web
+#
+# --------------------------------------------------

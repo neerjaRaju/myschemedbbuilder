@@ -7,6 +7,7 @@ import '../l10n/strings.dart';
 import '../logic/categories.dart';
 import '../models/scheme.dart';
 import '../widgets/scheme_rail.dart';
+import '../widgets/ad_banner.dart';
 import 'bookmarks_screen.dart';
 import 'compare_screen.dart';
 import 'eligibility_screen.dart';
@@ -201,6 +202,7 @@ class _HomeTab extends StatelessWidget {
           children: [
             _Header(s: s),
             _EligibilityBanner(s: s),
+            const AdBanner(),
             SchemeRail(
               title: s.get('featured'),
               schemes: repo.featured(),

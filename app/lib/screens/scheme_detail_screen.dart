@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:markdown/markdown.dart' as md;
 import '../app_state.dart';
 import '../data/user_store.dart';
 import '../l10n/strings.dart';
 import '../models/scheme.dart';
 import '../widgets/scheme_card.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
-/// Full scheme details: objective, benefits, eligibility, documents,
-/// application process, official website, helpline, FAQs and related
-/// schemes.
 class SchemeDetailScreen extends StatelessWidget {
   final String schemeId;
 
@@ -19,6 +17,7 @@ class SchemeDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = context.watch<AppState>();
     final s = S.of(context);
+    final theme = Theme.of(context);
     final scheme = state.repository.byId(schemeId);
     if (scheme == null) {
       return Scaffold(
@@ -30,91 +29,167 @@ class SchemeDetailScreen extends StatelessWidget {
     final bookmarked = state.isBookmarked(scheme.id);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(scheme.title, maxLines: 1, overflow: TextOverflow.fade),
-        actions: [
-          IconButton(
-            icon: Icon(bookmarked ? Icons.bookmark : Icons.bookmark_outline),
-            onPressed: () => state.toggleBookmark(scheme.id),
-          ),
-          IconButton(
-            icon: const Icon(Icons.alarm_add),
-            tooltip: s.get('addReminder'),
-            onPressed: () => _pickReminder(context, state, scheme, s),
-          ),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Text(scheme.title, style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 4),
-          Wrap(
-            spacing: 8,
-            children: [
-              Chip(label: Text(scheme.isCentral ? 'Central' : scheme.state)),
-              if (scheme.category.isNotEmpty)
-                Chip(label: Text(scheme.category)),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar.large(
+            title: Text(scheme.title),
+            actions: [
+              IconButton(
+                icon: Icon(bookmarked ? Icons.bookmark : Icons.bookmark_outline),
+                onPressed: () => state.toggleBookmark(scheme.id),
+              ),
+              IconButton(
+                icon: const Icon(Icons.alarm_add),
+                tooltip: s.get('addReminder'),
+                onPressed: () => _pickReminder(context, state, scheme, s),
+              ),
             ],
           ),
-          if (scheme.ministry.isNotEmpty)
-            _Section(title: s.get('ministry'), body: scheme.ministry),
-          if (scheme.description.isNotEmpty)
-            _Section(title: s.get('objective'), body: scheme.description),
-          if (scheme.benefits.isNotEmpty)
-            _Section(title: s.get('benefits'), body: scheme.benefits),
-          if (scheme.eligibility.isNotEmpty)
-            _Section(
-              title: s.get('eligibilityCriteria'),
-              body: scheme.eligibility,
-            ),
-          if (scheme.documents.isNotEmpty)
-            _Section(
-              title: s.get('documents'),
-              body: scheme.documents.map((d) => '• $d').join('\n'),
-            ),
-          if (scheme.applicationProcess.isNotEmpty)
-            _Section(
-              title: s.get('howToApply'),
-              body: scheme.applicationProcess,
-            ),
-          if (scheme.officialUrl.isNotEmpty)
-            _Section(title: s.get('officialWebsite'), body: scheme.officialUrl),
-          if (scheme.helpline.isNotEmpty)
-            _Section(title: s.get('helpline'), body: scheme.helpline),
-          if (scheme.lastUpdated.isNotEmpty)
-            _Section(title: s.get('lastUpdated'), body: scheme.lastUpdated),
-          if (scheme.faq.isNotEmpty) ...[
-            Padding(
-              padding: const EdgeInsets.only(top: 16, bottom: 4),
-              child: Text(
-                s.get('faqs'),
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
-            for (final entry in scheme.faq.entries)
-              ExpansionTile(
-                title: Text(entry.key),
-                tilePadding: EdgeInsets.zero,
-                children: [
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    FilterChip(
+                      label: Text(scheme.isCentral ? 'Central' : scheme.state),
+                      onSelected: (_) {},
+                      selected: true,
+                    ),
+                    if (scheme.category.isNotEmpty)
+                      FilterChip(
+                        label: Text(scheme.category),
+                        onSelected: (_) {},
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                if (scheme.ministry.isNotEmpty)
+                  _Section(
+                    title: s.get('ministry'),
+                    body: scheme.ministry,
+                    icon: Icons.account_balance,
+                  ),
+                if (scheme.description.isNotEmpty)
+                  _Section(
+                    title: s.get('objective'),
+                    body: scheme.description,
+                    icon: Icons.info_outline,
+                  ),
+                if (scheme.benefits.isNotEmpty)
+                  _Section(
+                    title: s.get('benefits'),
+                    body: scheme.benefits,
+                    icon: Icons.card_giftcard,
+                  ),
+                if (scheme.eligibility.isNotEmpty)
+                  _Section(
+                    title: s.get('eligibilityCriteria'),
+                    body: scheme.eligibility,
+                    icon: Icons.check_circle_outline,
+                  ),
+                if (scheme.documents.isNotEmpty)
+                  _Section(
+                    title: s.get('documents'),
+                    body: scheme.documents.map((d) => '• $d').join('\n'),
+                    icon: Icons.description_outlined,
+                  ),
+                if (scheme.applicationProcess.isNotEmpty)
+                  _Section(
+                    title: s.get('howToApply'),
+                    body: scheme.applicationProcess,
+                    icon: Icons.app_registration,
+                  ),
+                if (scheme.officialUrl.isNotEmpty)
+                  _Section(
+                    title: s.get('officialWebsite'),
+                    body: scheme.officialUrl,
+                    icon: Icons.language,
+                  ),
+                if (scheme.helpline.isNotEmpty)
+                  _Section(
+                    title: s.get('helpline'),
+                    body: scheme.helpline,
+                    icon: Icons.phone_in_talk,
+                  ),
+                if (scheme.lastUpdated.isNotEmpty)
+                  _Section(
+                    title: s.get('lastUpdated'),
+                    body: scheme.lastUpdated,
+                    icon: Icons.update,
+                  ),
+                if (scheme.faq.isNotEmpty) ...[
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Text(entry.value),
+                    padding: const EdgeInsets.only(top: 24, bottom: 8),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.question_answer_outlined, size: 20),
+                        const SizedBox(width: 8),
+                        Text(
+                          s.get('faqs'),
+                          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Card(
+                    clipBehavior: Clip.antiAlias,
+                    child: Column(
+                      children: [
+                        for (final entry in scheme.faq.entries)
+                          ExpansionTile(
+                            title: Text(entry.key, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                                child: MarkdownBody(
+                                  data: entry.value,
+                                  selectable: true,
+                                  styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+                                    p: theme.textTheme.bodyMedium?.copyWith(
+                                      height: 1.6,
+                                      fontSize: 16,
+                                    ),
+                                    h1: theme.textTheme.headlineMedium,
+                                    h2: theme.textTheme.headlineSmall,
+                                    h3: theme.textTheme.titleLarge,
+                                    strong: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    a: const TextStyle(
+                                      color: Colors.blue,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                      ],
+                    ),
                   ),
                 ],
-              ),
-          ],
-          if (related.isNotEmpty) ...[
-            Padding(
-              padding: const EdgeInsets.only(top: 16, bottom: 4),
-              child: Text(
-                s.get('relatedSchemes'),
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+                if (related.isNotEmpty) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24, bottom: 8),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.library_books_outlined, size: 20),
+                        const SizedBox(width: 8),
+                        Text(
+                          s.get('relatedSchemes'),
+                          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                  for (final other in related) SchemeCard(scheme: other),
+                ],
+                const SizedBox(height: 32),
+              ]),
             ),
-            for (final other in related) SchemeCard(scheme: other),
-          ],
-          const SizedBox(height: 32),
+          ),
         ],
       ),
     );
@@ -142,8 +217,7 @@ class SchemeDetailScreen extends StatelessWidget {
       ),
     );
     if (context.mounted) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(s.get('reminderSet'))));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(s.get('reminderSet'))));
     }
   }
 }
@@ -151,20 +225,58 @@ class SchemeDetailScreen extends StatelessWidget {
 class _Section extends StatelessWidget {
   final String title;
   final String body;
+  final IconData icon;
 
-  const _Section({required this.title, required this.body});
+  const _Section({
+    required this.title,
+    required this.body,
+    required this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 4),
-          SelectableText(body),
-        ],
+    final theme = Theme.of(context);
+    return Card(
+      margin: const EdgeInsets.only(top: 16),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, size: 20, color: theme.colorScheme.primary),
+                const SizedBox(width: 8),
+                Text(
+                  title,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            MarkdownBody(
+              data: body,
+              selectable: true,
+              styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+                p: theme.textTheme.bodyMedium?.copyWith(
+                  height: 1.6,
+                  fontSize: 16,
+                ),
+                h1: theme.textTheme.headlineMedium,
+                h2: theme.textTheme.headlineSmall,
+                h3: theme.textTheme.titleLarge,
+                listBullet: theme.textTheme.bodyMedium,
+                a: const TextStyle(
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

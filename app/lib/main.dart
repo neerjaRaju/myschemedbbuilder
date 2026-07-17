@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart' as ads;
 import 'package:provider/provider.dart';
 
 import 'app.dart';
@@ -8,6 +9,7 @@ import 'data/user_store.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  ads.MobileAds.instance.initialize();
   // Draw behind the system bars; AnnotatedRegion in SchemeApp styles them.
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   final store = await UserStore.load();

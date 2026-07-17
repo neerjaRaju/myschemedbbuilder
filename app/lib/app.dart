@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'app_state.dart';
@@ -30,6 +31,7 @@ class SchemeApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: seedColor),
         scaffoldBackgroundColor: const Color(0xFFF5F3FC),
+        textTheme: GoogleFonts.poppinsTextTheme(),
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
@@ -37,6 +39,7 @@ class SchemeApp extends StatelessWidget {
           seedColor: seedColor,
           brightness: Brightness.dark,
         ),
+        textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
         useMaterial3: true,
       ),
       themeMode: ThemeMode.system,
