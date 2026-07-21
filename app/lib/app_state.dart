@@ -1,11 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 
+import 'data/connectivity_service.dart';
 import 'data/database_service.dart';
 import 'data/scheme_repository.dart';
 import 'data/user_store.dart';
 import 'models/scheme.dart';
 
-enum AppStatus { loading, downloading, ready, error }
+enum AppStatus { loading, downloading, ready, error, offline }
 
 /// Root application state: database lifecycle, locale, bookmarks,
 /// notifications and the compare basket.
@@ -19,6 +22,8 @@ class AppState extends ChangeNotifier {
   String errorMessage = '';
   final List<String> compareBasket = [];
 
+  StreamSubscription<bool>? _connectivitySub;
+
   AppState({DatabaseService? dbService, required this.store})
       : _dbService = dbService ?? DatabaseService() {
     repository = SchemeRepository(_dbService);
@@ -28,17 +33,33 @@ class AppState extends ChangeNotifier {
 
   Future<void> initialize() async {
     try {
-      status = AppStatus.downloading;
+      status = _dbService.isReady ? status : AppStatus.downloading;
       notifyListeners();
       await _dbService.ensureReady(onProgress: _onProgress);
       status = AppStatus.ready;
       notifyListeners();
+      _connectivitySub?.cancel();
       await _detectNewSchemes(firstRun: store.knownSchemeIds.isEmpty);
     } on Object catch (e) {
-      status = AppStatus.error;
+      // The app is offline-first: it only *needs* the network to download the
+      // database the very first time. If that fails while offline, show the
+      // no-connection screen and auto-retry when the network returns.
+      final online = await ConnectivityService.isOnline();
+      status = online ? AppStatus.error : AppStatus.offline;
       errorMessage = '$e';
       notifyListeners();
+      if (!online) _watchForReconnect();
     }
+  }
+
+  /// Auto-retries [initialize] once the device regains a network interface.
+  void _watchForReconnect() {
+    _connectivitySub?.cancel();
+    _connectivitySub = ConnectivityService.onStatusChange().listen((online) {
+      if (online && status == AppStatus.offline) {
+        initialize();
+      }
+    });
   }
 
   void _onProgress(double progress) {
@@ -155,6 +176,7 @@ class AppState extends ChangeNotifier {
 
   @override
   void dispose() {
+    _connectivitySub?.cancel();
     _dbService.dispose();
     super.dispose();
   }

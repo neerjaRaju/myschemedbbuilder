@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../app_state.dart';
+import '../data/connectivity_service.dart';
 import '../l10n/strings.dart';
 import '../logic/categories.dart';
 import '../models/scheme.dart';
@@ -11,6 +12,7 @@ import '../widgets/scheme_rail.dart';
 import 'bookmarks_screen.dart';
 import 'compare_screen.dart';
 import 'eligibility_screen.dart';
+import 'no_connection_screen.dart';
 import 'notifications_screen.dart';
 import 'scheme_list_screen.dart';
 import 'search_screen.dart';
@@ -43,6 +45,8 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         );
+      case AppStatus.offline:
+        return NoConnectionScreen(onRetry: state.initialize);
       case AppStatus.error:
         return Scaffold(
           body: Center(
@@ -183,114 +187,123 @@ class _HomeTab extends StatelessWidget {
     final repo = state.repository;
 
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: () async {
-          final updated = await state.refreshDatabase();
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(updated ? s.get('updated') : s.get('upToDate')),
-              ),
-            );
-          }
-        },
-        child: ListView(
-          padding: EdgeInsets.only(
-            top: MediaQuery.paddingOf(context).top + 8,
-            bottom: 110,
-          ),
-          children: [
-            _Header(s: s),
-            _EligibilityBanner(s: s),
-            const AdBanner(),
-            SchemeRail(
-              title: s.get('featured'),
-              schemes: repo.featured(),
-              icon: Icons.workspace_premium,
-              iconColor: const Color(0xFF6C4DF0),
-              onViewAll: () => _openResults(
-                context,
-                s.get('featured'),
-                repo.featured(limit: 50),
-              ),
-            ),
-            SchemeRail(
-              title: s.get('trending'),
-              schemes: repo.trending(),
-              icon: Icons.star,
-              iconColor: const Color(0xFFF2A93B),
-              onViewAll: () => _openResults(
-                context,
-                s.get('trending'),
-                repo.trending(limit: 50),
-              ),
-            ),
-            SchemeRail(
-              title: s.get('recentlyUpdated'),
-              schemes: repo.recentlyUpdated(),
-              icon: Icons.bolt,
-              iconColor: const Color(0xFF2E86F0),
-              onViewAll: () => _openResults(
-                context,
-                s.get('recentlyUpdated'),
-                repo.recentlyUpdated(limit: 50),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
-              child: Text(
-                s.get('categories'),
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w700),
-              ),
-            ),
-            GridView.count(
-              crossAxisCount: 3,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              childAspectRatio: 1.1,
-              children: [
-                for (final category in kCategories)
-                  InkWell(
-                    borderRadius: BorderRadius.circular(16),
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            SchemeListScreen(categoryKey: category.key),
+      body: Column(
+        children: [
+          const _OfflineBanner(),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: () async {
+                final updated = await state.refreshDatabase();
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        updated ? s.get('updated') : s.get('upToDate'),
                       ),
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircleAvatar(
-                          radius: 26,
-                          backgroundColor: Theme.of(context)
-                              .colorScheme
-                              .primaryContainer
-                              .withValues(alpha: 0.6),
-                          child: Icon(
-                            category.icon,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          s.get(category.key),
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
+                  );
+                }
+              },
+              child: ListView(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.paddingOf(context).top + 8,
+                  bottom: 110,
+                ),
+                children: [
+                  _Header(s: s),
+                  _EligibilityBanner(s: s),
+                  const AdBanner(),
+                  SchemeRail(
+                    title: s.get('featured'),
+                    schemes: repo.featured(),
+                    icon: Icons.workspace_premium,
+                    iconColor: const Color(0xFF6C4DF0),
+                    onViewAll: () => _openResults(
+                      context,
+                      s.get('featured'),
+                      repo.featured(limit: 50),
                     ),
                   ),
-              ],
+                  SchemeRail(
+                    title: s.get('trending'),
+                    schemes: repo.trending(),
+                    icon: Icons.star,
+                    iconColor: const Color(0xFFF2A93B),
+                    onViewAll: () => _openResults(
+                      context,
+                      s.get('trending'),
+                      repo.trending(limit: 50),
+                    ),
+                  ),
+                  SchemeRail(
+                    title: s.get('recentlyUpdated'),
+                    schemes: repo.recentlyUpdated(),
+                    icon: Icons.bolt,
+                    iconColor: const Color(0xFF2E86F0),
+                    onViewAll: () => _openResults(
+                      context,
+                      s.get('recentlyUpdated'),
+                      repo.recentlyUpdated(limit: 50),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
+                    child: Text(
+                      s.get('categories'),
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                  GridView.count(
+                    crossAxisCount: 3,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    childAspectRatio: 1.1,
+                    children: [
+                      for (final category in kCategories)
+                        InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  SchemeListScreen(categoryKey: category.key),
+                            ),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CircleAvatar(
+                                radius: 26,
+                                backgroundColor: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer
+                                    .withValues(alpha: 0.6),
+                                child: Icon(
+                                  category.icon,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                s.get(category.key),
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -507,6 +520,51 @@ class _EligibilityBanner extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Thin banner shown at the top of Home while the device is offline. The app
+/// still works from the cached database, so this is informational only.
+class _OfflineBanner extends StatelessWidget {
+  const _OfflineBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = Theme.of(context);
+    return StreamBuilder<bool>(
+      stream: ConnectivityService.onStatusChange(),
+      builder: (context, snapshot) {
+        final online = snapshot.data ?? true;
+        if (online) return const SizedBox.shrink();
+        return Material(
+          color: theme.colorScheme.errorContainer,
+          child: SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.cloud_off,
+                    size: 16,
+                    color: theme.colorScheme.onErrorContainer,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    s.get('offlineBanner'),
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: theme.colorScheme.onErrorContainer,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
