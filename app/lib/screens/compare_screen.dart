@@ -4,9 +4,14 @@ import 'package:provider/provider.dart';
 import '../app_state.dart';
 import '../l10n/strings.dart';
 import '../models/scheme.dart';
+import 'search_screen.dart';
 
 /// Side-by-side comparison of up to three selected schemes
 /// (e.g. PM Kisan vs KCC vs PM Fasal Bima).
+///
+/// Schemes are added either by ticking the compare box on any scheme card,
+/// or via the "Add schemes" button here (which opens search with those
+/// checkboxes). Current selections are always shown as removable chips.
 class CompareScreen extends StatelessWidget {
   const CompareScreen({super.key});
 
@@ -17,21 +22,138 @@ class CompareScreen extends StatelessWidget {
     final schemes = state.compareSchemes();
 
     return Scaffold(
-      appBar: AppBar(title: Text(s.get('compare'))),
-      body: schemes.length < 2
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Text(s.get('compareHint'), textAlign: TextAlign.center),
-              ),
-            )
-          : SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(12),
-                child: _CompareTable(schemes: schemes, s: s),
-              ),
+      appBar: AppBar(
+        title: Text(s.get('compare')),
+        actions: [
+          if (schemes.isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.delete_sweep_outlined),
+              tooltip: s.get('clearAll'),
+              onPressed: () {
+                for (final scheme in List<Scheme>.of(schemes)) {
+                  state.toggleCompare(scheme.id);
+                }
+              },
             ),
+        ],
+      ),
+      body: Column(
+        children: [
+          _SelectionBar(schemes: schemes, s: s),
+          const Divider(height: 1),
+          Expanded(
+            child: schemes.length < 2
+                ? _EmptyCompare(s: s)
+                : SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(12),
+                      child: _CompareTable(schemes: schemes, s: s),
+                    ),
+                  ),
+          ),
+        ],
+      ),
+      floatingActionButton: schemes.length < AppState.maxCompare
+          ? FloatingActionButton.extended(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SearchScreen()),
+              ),
+              icon: const Icon(Icons.add),
+              label: Text(s.get('addSchemes')),
+            )
+          : null,
+    );
+  }
+}
+
+/// Shows the currently selected schemes as removable chips plus a counter.
+class _SelectionBar extends StatelessWidget {
+  final List<Scheme> schemes;
+  final S s;
+
+  const _SelectionBar({required this.schemes, required this.s});
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.read<AppState>();
+    if (schemes.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '${schemes.length}/${AppState.maxCompare}',
+            style: Theme.of(context).textTheme.labelMedium,
+          ),
+          const SizedBox(height: 6),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: [
+              for (final scheme in schemes)
+                InputChip(
+                  label: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 220),
+                    child: Text(
+                      scheme.title,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  onDeleted: () => state.toggleCompare(scheme.id),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _EmptyCompare extends StatelessWidget {
+  final S s;
+
+  const _EmptyCompare({required this.s});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(28),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.compare_arrows,
+              size: 56,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              s.get('compareHint'),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              s.get('compareAddHint'),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+            const SizedBox(height: 20),
+            FilledButton.icon(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SearchScreen()),
+              ),
+              icon: const Icon(Icons.add),
+              label: Text(s.get('addSchemes')),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -78,13 +200,15 @@ class _CompareTable extends StatelessWidget {
         for (final (label, valueOf) in rows)
           DataRow(
             cells: [
-              DataCell(SizedBox(
-                width: 110,
-                child: Text(
-                  label,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+              DataCell(
+                SizedBox(
+                  width: 110,
+                  child: Text(
+                    label,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
                 ),
-              )),
+              ),
               for (final scheme in schemes)
                 DataCell(
                   SizedBox(

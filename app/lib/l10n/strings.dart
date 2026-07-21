@@ -29,6 +29,8 @@ class S {
 
   static const Map<String, Map<String, String>> _strings = {
     'en': {
+      'addSchemes': 'Add schemes',
+      'compareAddHint': 'Tap the compare box on any scheme to add it here.',
       'noInternet': 'No internet connection',
       'noInternetMessage':
           'You need internet the first time to download the schemes database. After that the app works offline.',
@@ -126,6 +128,9 @@ class S {
       'skillDevelopment': 'Skill Development',
     },
     'hi': {
+      'addSchemes': 'योजनाएँ जोड़ें',
+      'compareAddHint':
+          'यहाँ जोड़ने के लिए किसी भी योजना पर तुलना बॉक्स टैप करें।',
       'noInternet': 'इंटरनेट कनेक्शन नहीं',
       'noInternetMessage':
           'योजना डेटाबेस डाउनलोड करने के लिए पहली बार इंटरनेट आवश्यक है। इसके बाद ऐप ऑफ़लाइन काम करता है।',
@@ -223,6 +228,9 @@ class S {
       'skillDevelopment': 'कौशल विकास',
     },
     'ta': {
+      'addSchemes': 'திட்டங்களைச் சேர்க்கவும்',
+      'compareAddHint':
+          'இங்கு சேர்க்க எந்த திட்டத்திலும் ஒப்பீடு பெட்டியைத் தட்டவும்.',
       'noInternet': 'இணைய இணைப்பு இல்லை',
       'noInternetMessage':
           'திட்டத் தரவுத்தளத்தைப் பதிவிறக்க முதல் முறை இணையம் தேவை. அதன் பிறகு செயலி ஆஃப்லைனில் இயங்கும்.',
@@ -320,6 +328,9 @@ class S {
       'skillDevelopment': 'திறன் மேம்பாடு',
     },
     'te': {
+      'addSchemes': 'పథకాలను జోడించండి',
+      'compareAddHint':
+          'ఇక్కడ జోడించడానికి ఏదైనా పథకంపై పోలిక బాక్స్‌ను నొక్కండి.',
       'noInternet': 'ఇంటర్నెట్ కనెక్షన్ లేదు',
       'noInternetMessage':
           'పథక డేటాబేస్ డౌన్‌లోడ్ చేయడానికి మొదటిసారి ఇంటర్నెట్ అవసరం. ఆ తర్వాత యాప్ ఆఫ్‌లైన్‌లో పనిచేస్తుంది.',
@@ -417,6 +428,9 @@ class S {
       'skillDevelopment': 'నైపుణ్యాభివృద్ధి',
     },
     'mr': {
+      'addSchemes': 'योजना जोडा',
+      'compareAddHint':
+          'येथे जोडण्यासाठी कोणत्याही योजनेवरील तुलना बॉक्स टॅप करा.',
       'noInternet': 'इंटरनेट कनेक्शन नाही',
       'noInternetMessage':
           'योजना डेटाबेस डाउनलोड करण्यासाठी पहिल्यांदा इंटरनेट आवश्यक आहे. त्यानंतर अ‍ॅप ऑफलाइन चालते.',
@@ -514,6 +528,9 @@ class S {
       'skillDevelopment': 'कौशल्य विकास',
     },
     'bn': {
+      'addSchemes': 'প্রকল্প যোগ করুন',
+      'compareAddHint':
+          'এখানে যোগ করতে যেকোনো প্রকল্পে তুলনা বাক্সে ট্যাপ করুন।',
       'noInternet': 'ইন্টারনেট সংযোগ নেই',
       'noInternetMessage':
           'প্রকল্প ডেটাবেস ডাউনলোড করতে প্রথমবার ইন্টারনেট প্রয়োজন। এরপর অ্যাপ অফলাইনে কাজ করে।',
@@ -611,6 +628,8 @@ class S {
       'skillDevelopment': 'দক্ষতা উন্নয়ন',
     },
     'gu': {
+      'addSchemes': 'યોજનાઓ ઉમેરો',
+      'compareAddHint': 'અહીં ઉમેરવા કોઈપણ યોજના પર સરખામણી બોક્સ ટૅપ કરો.',
       'noInternet': 'ઇન્ટરનેટ કનેક્શન નથી',
       'noInternetMessage':
           'યોજના ડેટાબેઝ ડાઉનલોડ કરવા પ્રથમ વખત ઇન્ટરનેટ જરૂરી છે. ત્યાર બાદ ઍપ ઑફલાઇન કામ કરે છે.',
@@ -708,6 +727,9 @@ class S {
       'skillDevelopment': 'કૌશલ્ય વિકાસ',
     },
     'kn': {
+      'addSchemes': 'ಯೋಜನೆಗಳನ್ನು ಸೇರಿಸಿ',
+      'compareAddHint':
+          'ಇಲ್ಲಿ ಸೇರಿಸಲು ಯಾವುದೇ ಯೋಜನೆಯ ಹೋಲಿಕೆ ಬಾಕ್ಸ್ ಟ್ಯಾಪ್ ಮಾಡಿ.',
       'noInternet': 'ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕವಿಲ್ಲ',
       'noInternetMessage':
           'ಯೋಜನೆ ಡೇಟಾಬೇಸ್ ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ಮೊದಲ ಬಾರಿ ಇಂಟರ್ನೆಟ್ ಬೇಕು. ನಂತರ ಆ್ಯಪ್ ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿ ಕೆಲಸ ಮಾಡುತ್ತದೆ.',
@@ -805,6 +827,9 @@ class S {
       'skillDevelopment': 'ಕೌಶಲ್ಯಾಭಿವೃದ್ಧಿ',
     },
     'ml': {
+      'addSchemes': 'പദ്ധതികൾ ചേർക്കുക',
+      'compareAddHint':
+          'ഇവിടെ ചേർക്കാൻ ഏതെങ്കിലും പദ്ധതിയിലെ താരതമ്യ ബോക്സ് ടാപ്പ് ചെയ്യുക.',
       'noInternet': 'ഇന്റർനെറ്റ് കണക്ഷൻ ഇല്ല',
       'noInternetMessage':
           'പദ്ധതി ഡാറ്റാബേസ് ഡൗൺലോഡ് ചെയ്യാൻ ആദ്യ തവണ ഇന്റർനെറ്റ് ആവശ്യമാണ്. അതിനുശേഷം ആപ്പ് ഓഫ്‌ലൈനിൽ പ്രവർത്തിക്കും.',
@@ -902,6 +927,9 @@ class S {
       'skillDevelopment': 'നൈപുണ്യ വികസനം',
     },
     'pa': {
+      'addSchemes': 'ਯੋਜਨਾਵਾਂ ਸ਼ਾਮਲ ਕਰੋ',
+      'compareAddHint':
+          'ਇੱਥੇ ਸ਼ਾਮਲ ਕਰਨ ਲਈ ਕਿਸੇ ਵੀ ਯੋਜਨਾ \'ਤੇ ਤੁਲਨਾ ਬਾਕਸ ਟੈਪ ਕਰੋ।',
       'noInternet': 'ਇੰਟਰਨੈੱਟ ਕਨੈਕਸ਼ਨ ਨਹੀਂ',
       'noInternetMessage':
           'ਯੋਜਨਾ ਡਾਟਾਬੇਸ ਡਾਊਨਲੋਡ ਕਰਨ ਲਈ ਪਹਿਲੀ ਵਾਰ ਇੰਟਰਨੈੱਟ ਲੋੜੀਂਦਾ ਹੈ। ਇਸ ਤੋਂ ਬਾਅਦ ਐਪ ਔਫਲਾਈਨ ਕੰਮ ਕਰਦੀ ਹੈ।',
@@ -999,6 +1027,9 @@ class S {
       'skillDevelopment': 'ਹੁਨਰ ਵਿਕਾਸ',
     },
     'or': {
+      'addSchemes': 'ଯୋଜନା ଯୋଗ କରନ୍ତୁ',
+      'compareAddHint':
+          'ଏଠାରେ ଯୋଗ କରିବାକୁ ଯେକୌଣସି ଯୋଜନାରେ ତୁଳନା ବାକ୍ସ ଟ୍ୟାପ୍ କରନ୍ତୁ।',
       'noInternet': 'ଇଣ୍ଟରନେଟ୍ ସଂଯୋଗ ନାହିଁ',
       'noInternetMessage':
           'ଯୋଜନା ଡାଟାବେସ୍ ଡାଉନଲୋଡ୍ କରିବାକୁ ପ୍ରଥମ ଥର ଇଣ୍ଟରନେଟ୍ ଆବଶ୍ୟକ। ତାପରେ ଆପ୍ ଅଫଲାଇନ୍ କାମ କରେ।',
