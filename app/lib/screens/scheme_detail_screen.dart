@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:markdown/markdown.dart' as md;
+import 'package:provider/provider.dart';
+
 import '../app_state.dart';
 import '../data/user_store.dart';
 import '../l10n/strings.dart';
 import '../models/scheme.dart';
 import '../widgets/scheme_card.dart';
-import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 class SchemeDetailScreen extends StatelessWidget {
   final String schemeId;
@@ -35,7 +36,8 @@ class SchemeDetailScreen extends StatelessWidget {
             title: Text(scheme.title),
             actions: [
               IconButton(
-                icon: Icon(bookmarked ? Icons.bookmark : Icons.bookmark_outline),
+                icon:
+                    Icon(bookmarked ? Icons.bookmark : Icons.bookmark_outline),
                 onPressed: () => state.toggleBookmark(scheme.id),
               ),
               IconButton(
@@ -128,7 +130,8 @@ class SchemeDetailScreen extends StatelessWidget {
                         const SizedBox(width: 8),
                         Text(
                           s.get('faqs'),
-                          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                          style: theme.textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -139,14 +142,19 @@ class SchemeDetailScreen extends StatelessWidget {
                       children: [
                         for (final entry in scheme.faq.entries)
                           ExpansionTile(
-                            title: Text(entry.key, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                            title: Text(entry.key,
+                                style: const TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w500)),
                             children: [
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                                padding:
+                                    const EdgeInsets.fromLTRB(16, 0, 16, 16),
                                 child: MarkdownBody(
                                   data: entry.value,
                                   selectable: true,
-                                  styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+                                  styleSheet:
+                                      MarkdownStyleSheet.fromTheme(theme)
+                                          .copyWith(
                                     p: theme.textTheme.bodyMedium?.copyWith(
                                       height: 1.6,
                                       fontSize: 16,
@@ -179,7 +187,8 @@ class SchemeDetailScreen extends StatelessWidget {
                         const SizedBox(width: 8),
                         Text(
                           s.get('relatedSchemes'),
-                          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                          style: theme.textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -217,7 +226,8 @@ class SchemeDetailScreen extends StatelessWidget {
       ),
     );
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(s.get('reminderSet'))));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(s.get('reminderSet'))));
     }
   }
 }
