@@ -54,7 +54,7 @@ void main() {
       expect(JsonParser.parseFile('${tempDir.path}/missing.json'), isEmpty);
 
       final bad = '${tempDir.path}/bad.json';
-      File(bad).writeAsStringSync('{}');
+      File(bad).writeAsStringSync('[]');
       expect(JsonParser.parseFile(bad), isEmpty);
     });
   });
