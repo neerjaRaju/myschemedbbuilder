@@ -29,6 +29,10 @@ class S {
 
   static const Map<String, Map<String, String>> _strings = {
     'en': {
+      'about': 'About & Disclaimer',
+      'disclaimer':
+          'Unofficial app. Not affiliated with the Government of India or MyScheme. Scheme data is from public sources and is for information only — always verify on the official website before applying.',
+      'dataSource': 'Data source: MyScheme (myscheme.gov.in)',
       'adPrivacy': 'Manage ad privacy',
       'adPrivacySubtitle': 'Change your personalized ads choice',
       'privacyPolicy': 'Privacy Policy',
@@ -117,6 +121,10 @@ class S {
       'skillDevelopment': 'Skill Development',
     },
     'hi': {
+      'about': 'परिचय एवं अस्वीकरण',
+      'disclaimer':
+          'अनौपचारिक ऐप। भारत सरकार या MyScheme से संबद्ध नहीं। योजना डेटा सार्वजनिक स्रोतों से है और केवल जानकारी हेतु है — आवेदन से पहले हमेशा आधिकारिक वेबसाइट पर पुष्टि करें।',
+      'dataSource': 'डेटा स्रोत: MyScheme (myscheme.gov.in)',
       'adPrivacy': 'विज्ञापन गोपनीयता प्रबंधित करें',
       'adPrivacySubtitle': 'अपनी वैयक्तिकृत विज्ञापन पसंद बदलें',
       'privacyPolicy': 'गोपनीयता नीति',
@@ -205,6 +213,10 @@ class S {
       'skillDevelopment': 'कौशल विकास',
     },
     'ta': {
+      'about': 'பற்றி & மறுப்பு',
+      'disclaimer':
+          'அதிகாரப்பூர்வமற்ற செயலி. இந்திய அரசு அல்லது MyScheme உடன் தொடர்பில்லை. திட்டத் தரவு பொது ஆதாரங்களில் இருந்து, தகவலுக்காக மட்டுமே — விண்ணப்பிக்கும் முன் அதிகாரப்பூர்வ தளத்தில் சரிபார்க்கவும்.',
+      'dataSource': 'தரவு ஆதாரம்: MyScheme (myscheme.gov.in)',
       'adPrivacy': 'விளம்பர தனியுரிமையை நிர்வகிக்கவும்',
       'adPrivacySubtitle': 'தனிப்பயன் விளம்பர விருப்பத்தை மாற்றவும்',
       'privacyPolicy': 'தனியுரிமைக் கொள்கை',
@@ -293,6 +305,10 @@ class S {
       'skillDevelopment': 'திறன் மேம்பாடு',
     },
     'te': {
+      'about': 'గురించి & నిరాకరణ',
+      'disclaimer':
+          'అనధికారిక యాప్. భారత ప్రభుత్వం లేదా MyScheme తో సంబంధం లేదు. పథక డేటా బహిరంగ మూలాల నుండి, సమాచారం కోసం మాత్రమే — దరఖాస్తు ముందు అధికారిక వెబ్‌సైట్‌లో ధృవీకరించండి.',
+      'dataSource': 'డేటా మూలం: MyScheme (myscheme.gov.in)',
       'adPrivacy': 'ప్రకటన గోప్యతను నిర్వహించండి',
       'adPrivacySubtitle': 'మీ వ్యక్తిగతీకరించిన ప్రకటనల ఎంపికను మార్చండి',
       'privacyPolicy': 'గోప్యతా విధానం',
@@ -381,6 +397,10 @@ class S {
       'skillDevelopment': 'నైపుణ్యాభివృద్ధి',
     },
     'mr': {
+      'about': 'विषयी व अस्वीकरण',
+      'disclaimer':
+          'अनधिकृत अ‍ॅप. भारत सरकार किंवा MyScheme शी संलग्न नाही. योजना डेटा सार्वजनिक स्रोतांकडून, केवळ माहितीसाठी — अर्ज करण्यापूर्वी अधिकृत संकेतस्थळावर खात्री करा.',
+      'dataSource': 'डेटा स्रोत: MyScheme (myscheme.gov.in)',
       'adPrivacy': 'जाहिरात गोपनीयता व्यवस्थापित करा',
       'adPrivacySubtitle': 'तुमची वैयक्तिक जाहिरात निवड बदला',
       'privacyPolicy': 'गोपनीयता धोरण',
@@ -469,6 +489,10 @@ class S {
       'skillDevelopment': 'कौशल्य विकास',
     },
     'bn': {
+      'about': 'সম্পর্কে ও দাবিত্যাগ',
+      'disclaimer':
+          'অনানুষ্ঠানিক অ্যাপ। ভারত সরকার বা MyScheme-এর সাথে যুক্ত নয়। প্রকল্পের তথ্য সর্বজনীন উৎস থেকে, শুধুমাত্র তথ্যের জন্য — আবেদনের আগে সরকারি ওয়েবসাইটে যাচাই করুন।',
+      'dataSource': 'তথ্য উৎস: MyScheme (myscheme.gov.in)',
       'adPrivacy': 'বিজ্ঞাপন গোপনীয়তা পরিচালনা করুন',
       'adPrivacySubtitle': 'আপনার ব্যক্তিগতকৃত বিজ্ঞাপন পছন্দ পরিবর্তন করুন',
       'privacyPolicy': 'গোপনীয়তা নীতি',
@@ -557,6 +581,10 @@ class S {
       'skillDevelopment': 'দক্ষতা উন্নয়ন',
     },
     'gu': {
+      'about': 'વિશે અને અસ્વીકરણ',
+      'disclaimer':
+          'અનધિકૃત ઍપ. ભારત સરકાર કે MyScheme સાથે સંલગ્ન નથી. યોજના ડેટા જાહેર સ્રોતોમાંથી, માત્ર માહિતી માટે — અરજી પહેલાં અધિકૃત વેબસાઇટ પર ખાતરી કરો.',
+      'dataSource': 'ડેટા સ્રોત: MyScheme (myscheme.gov.in)',
       'adPrivacy': 'જાહેરાત ગોપનીયતા સંચાલિત કરો',
       'adPrivacySubtitle': 'તમારી વ્યક્તિગત જાહેરાત પસંદગી બદલો',
       'privacyPolicy': 'ગોપનીયતા નીતિ',
@@ -645,6 +673,10 @@ class S {
       'skillDevelopment': 'કૌશલ્ય વિકાસ',
     },
     'kn': {
+      'about': 'ಕುರಿತು & ಹಕ್ಕುತ್ಯಾಗ',
+      'disclaimer':
+          'ಅನಧಿಕೃತ ಆ್ಯಪ್. ಭಾರತ ಸರ್ಕಾರ ಅಥವಾ MyScheme ಜೊತೆ ಸಂಬಂಧವಿಲ್ಲ. ಯೋಜನೆ ಡೇಟಾ ಸಾರ್ವಜನಿಕ ಮೂಲಗಳಿಂದ, ಮಾಹಿತಿಗಾಗಿ ಮಾತ್ರ — ಅರ್ಜಿ ಮೊದಲು ಅಧಿಕೃತ ಜಾಲತಾಣದಲ್ಲಿ ದೃಢೀಕರಿಸಿ.',
+      'dataSource': 'ಡೇಟಾ ಮೂಲ: MyScheme (myscheme.gov.in)',
       'adPrivacy': 'ಜಾಹೀರಾತು ಗೌಪ್ಯತೆ ನಿರ್ವಹಿಸಿ',
       'adPrivacySubtitle': 'ನಿಮ್ಮ ವೈಯಕ್ತಿಕ ಜಾಹೀರಾತು ಆಯ್ಕೆ ಬದಲಾಯಿಸಿ',
       'privacyPolicy': 'ಗೌಪ್ಯತಾ ನೀತಿ',
@@ -733,6 +765,10 @@ class S {
       'skillDevelopment': 'ಕೌಶಲ್ಯಾಭಿವೃದ್ಧಿ',
     },
     'ml': {
+      'about': 'കുറിച്ച് & നിരാകരണം',
+      'disclaimer':
+          'അനൗദ്യോഗിക ആപ്പ്. ഇന്ത്യാ ഗവൺമെന്റ് അല്ലെങ്കിൽ MyScheme മായി ബന്ധമില്ല. പദ്ധതി വിവരങ്ങൾ പൊതു ഉറവിടങ്ങളിൽ നിന്ന്, വിവരത്തിനായി മാത്രം — അപേക്ഷിക്കുന്നതിന് മുമ്പ് ഔദ്യോഗിക വെബ്സൈറ്റിൽ പരിശോധിക്കുക.',
+      'dataSource': 'ഡാറ്റ ഉറവിടം: MyScheme (myscheme.gov.in)',
       'adPrivacy': 'പരസ്യ സ്വകാര്യത കൈകാര്യം ചെയ്യുക',
       'adPrivacySubtitle': 'നിങ്ങളുടെ വ്യക്തിഗത പരസ്യ തിരഞ്ഞെടുപ്പ് മാറ്റുക',
       'privacyPolicy': 'സ്വകാര്യതാ നയം',
@@ -821,6 +857,10 @@ class S {
       'skillDevelopment': 'നൈപുണ്യ വികസനം',
     },
     'pa': {
+      'about': 'ਬਾਰੇ ਅਤੇ ਬੇਦਾਅਵਾ',
+      'disclaimer':
+          'ਗੈਰ-ਅਧਿਕਾਰਤ ਐਪ। ਭਾਰਤ ਸਰਕਾਰ ਜਾਂ MyScheme ਨਾਲ ਸੰਬੰਧਿਤ ਨਹੀਂ। ਯੋਜਨਾ ਡਾਟਾ ਜਨਤਕ ਸਰੋਤਾਂ ਤੋਂ, ਸਿਰਫ਼ ਜਾਣਕਾਰੀ ਲਈ — ਅਰਜ਼ੀ ਤੋਂ ਪਹਿਲਾਂ ਅਧਿਕਾਰਤ ਵੈੱਬਸਾਈਟ \'ਤੇ ਪੁਸ਼ਟੀ ਕਰੋ।',
+      'dataSource': 'ਡਾਟਾ ਸਰੋਤ: MyScheme (myscheme.gov.in)',
       'adPrivacy': 'ਵਿਗਿਆਪਨ ਗੋਪਨੀਯਤਾ ਪ੍ਰਬੰਧਿਤ ਕਰੋ',
       'adPrivacySubtitle': 'ਆਪਣੀ ਵਿਅਕਤੀਗਤ ਵਿਗਿਆਪਨ ਚੋਣ ਬਦਲੋ',
       'privacyPolicy': 'ਗੋਪਨੀਯਤਾ ਨੀਤੀ',
@@ -909,6 +949,10 @@ class S {
       'skillDevelopment': 'ਹੁਨਰ ਵਿਕਾਸ',
     },
     'or': {
+      'about': 'ବିଷୟରେ ଓ ଅସ୍ୱୀକରଣ',
+      'disclaimer':
+          'ଅନଧିକୃତ ଆପ୍। ଭାରତ ସରକାର କିମ୍ବା MyScheme ସହ ସମ୍ବନ୍ଧିତ ନୁହେଁ। ଯୋଜନା ତଥ୍ୟ ସାର୍ବଜନୀନ ଉତ୍ସରୁ, କେବଳ ସୂଚନା ପାଇଁ — ଆବେଦନ ପୂର୍ବରୁ ସରକାରୀ ୱେବସାଇଟରେ ଯାଞ୍ଚ କରନ୍ତୁ।',
+      'dataSource': 'ତଥ୍ୟ ଉତ୍ସ: MyScheme (myscheme.gov.in)',
       'adPrivacy': 'ବିଜ୍ଞାପନ ଗୋପନୀୟତା ପରିଚାଳନା କରନ୍ତୁ',
       'adPrivacySubtitle': 'ଆପଣଙ୍କ ବ୍ୟକ୍ତିଗତ ବିଜ୍ଞାପନ ପସନ୍ଦ ବଦଳାନ୍ତୁ',
       'privacyPolicy': 'ଗୋପନୀୟତା ନୀତି',

@@ -93,6 +93,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
               mode: LaunchMode.externalApplication,
             ),
           ),
+          const Divider(),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+            child: Row(
+              children: [
+                const Icon(Icons.info_outline, size: 18),
+                const SizedBox(width: 8),
+                Text(
+                  s.get('about'),
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Text(
+              s.get('disclaimer'),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+            child: Text(
+              s.get('dataSource'),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+          ),
         ],
       ),
     );
