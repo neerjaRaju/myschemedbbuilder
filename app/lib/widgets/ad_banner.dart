@@ -58,8 +58,8 @@ class _AdBannerState extends State<AdBanner> {
     if (!_isLoaded || ad == null) return const SizedBox.shrink();
     final theme = Theme.of(context);
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-      height: ad.size.height.toDouble(),
+      margin: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+      height: ad.size.height.toDouble() + 10,
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(14),
@@ -69,11 +69,7 @@ class _AdBannerState extends State<AdBanner> {
       ),
       clipBehavior: Clip.antiAlias,
       alignment: Alignment.center,
-      child: SizedBox(
-        width: ad.size.width.toDouble(),
-        height: ad.size.height.toDouble(),
-        child: AdWidget(ad: ad),
-      ),
+      child: AdWidget(ad: ad),
     );
   }
 }

@@ -61,7 +61,7 @@ government schemes, sarkari yojana, eligibility, scholarship, PM Kisan,
 Ayushman, subsidy, welfare, yojana finder
 
 ## Contact email
-satish@zrix.com
+rajendra@zrix.com
 
 ## Privacy policy URL
 (Host app/PRIVACY_POLICY.md and paste the URL here and in Play Console.)
