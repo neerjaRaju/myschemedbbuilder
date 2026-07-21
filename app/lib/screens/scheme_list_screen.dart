@@ -123,6 +123,7 @@ class _FilterSheetState extends State<FilterSheet> {
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
+              isExpanded: true,
               initialValue: f.state.isEmpty ? null : f.state,
               decoration: InputDecoration(labelText: s.get('state')),
               items: [
@@ -141,6 +142,7 @@ class _FilterSheetState extends State<FilterSheet> {
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
+              isExpanded: true,
               initialValue: f.gender.isEmpty ? '' : f.gender,
               decoration: InputDecoration(labelText: s.get('gender')),
               items: [
@@ -162,6 +164,7 @@ class _FilterSheetState extends State<FilterSheet> {
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
+              isExpanded: true,
               initialValue: f.occupation,
               decoration: InputDecoration(labelText: s.get('occupation')),
               items: [
@@ -183,6 +186,7 @@ class _FilterSheetState extends State<FilterSheet> {
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
+              isExpanded: true,
               initialValue: f.casteCategory,
               decoration: InputDecoration(labelText: s.get('casteCategory')),
               items: [

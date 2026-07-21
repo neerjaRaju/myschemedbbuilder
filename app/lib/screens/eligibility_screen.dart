@@ -118,6 +118,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
+            isExpanded: true,
             initialValue: _gender,
             decoration: InputDecoration(
               labelText: s.get('gender'),
@@ -132,6 +133,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
+            isExpanded: true,
             initialValue: _state.isEmpty ? '' : _state,
             decoration: InputDecoration(
               labelText: s.get('state'),
@@ -155,6 +157,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
+            isExpanded: true,
             initialValue: _occupation,
             decoration: InputDecoration(
               labelText: s.get('occupation'),
@@ -176,6 +179,7 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
+            isExpanded: true,
             initialValue: _caste,
             decoration: InputDecoration(
               labelText: s.get('casteCategory'),
