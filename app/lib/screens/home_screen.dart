@@ -248,7 +248,7 @@ class _HomeTab extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
+                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
                     child: Text(
                       s.get('categories'),
                       style: Theme.of(context)

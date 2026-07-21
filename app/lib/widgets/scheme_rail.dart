@@ -67,13 +67,13 @@ class SchemeRail extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
+          padding: const EdgeInsets.fromLTRB(16, 14, 8, 2),
           child: Row(
             children: [
               CircleAvatar(
-                radius: 16,
+                radius: 15,
                 backgroundColor: iconColor,
-                child: Icon(icon, size: 17, color: Colors.white),
+                child: Icon(icon, size: 16, color: Colors.white),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -86,6 +86,9 @@ class SchemeRail extends StatelessWidget {
               if (onViewAll != null)
                 TextButton(
                   onPressed: onViewAll,
+                  style: TextButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                  ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -99,10 +102,10 @@ class SchemeRail extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 175,
+          height: 172,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 11),
             itemCount: schemes.length,
             itemBuilder: (context, index) => _RailCard(
               scheme: schemes[index],
@@ -124,78 +127,104 @@ class _RailCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final (background, foreground) = accent;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final (tint, foreground) = accent;
+    final isDark = theme.brightness == Brightness.dark;
+    final surface =
+        isDark ? theme.colorScheme.surfaceContainerHigh : Colors.white;
 
     return SizedBox(
-      width: 230,
+      width: 236,
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
         decoration: BoxDecoration(
-          color: isDark
-              ? Theme.of(context).colorScheme.surfaceContainerHigh
-              : background,
+          color: surface,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: foreground.withValues(alpha: 0.15)),
+          boxShadow: AppTheme.cardShadow(theme.brightness),
         ),
+        clipBehavior: Clip.antiAlias,
         child: InkWell(
-          borderRadius: BorderRadius.circular(20),
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => SchemeDetailScreen(schemeId: scheme.id),
             ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(14),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Accent header band with the category icon.
+              Container(
+                height: 56,
+                color: isDark ? foreground.withValues(alpha: 0.18) : tint,
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: Row(
                   children: [
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundColor: foreground.withValues(alpha: 0.12),
-                      child: Icon(_iconFor(scheme), color: foreground),
+                    Container(
+                      width: 38,
+                      height: 38,
+                      decoration: BoxDecoration(
+                        color: surface,
+                        shape: BoxShape.circle,
+                      ),
+                      child:
+                          Icon(_iconFor(scheme), size: 20, color: foreground),
                     ),
                     const Spacer(),
-                    Icon(Icons.chevron_right,
-                        color: foreground.withValues(alpha: 0.7)),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: surface.withValues(alpha: 0.85),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        scheme.isCentral ? s.get('centralGov') : scheme.state,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: foreground,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-                const SizedBox(height: 10),
-                Expanded(
-                  child: Text(
-                    scheme.title,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 14.5,
-                      height: 1.25,
-                    ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          scheme.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14.5,
+                            height: 1.25,
+                          ),
+                        ),
+                      ),
+                      if (scheme.ministry.isNotEmpty)
+                        Text(
+                          scheme.ministry,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 8),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: foreground.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    scheme.isCentral ? s.get('centralGov') : scheme.state,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: foreground,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

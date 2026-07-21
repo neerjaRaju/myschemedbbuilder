@@ -33,7 +33,7 @@ class _AdBannerState extends State<AdBanner> {
     final ad = BannerAd(
       adUnitId: AdsService.bannerAdUnitId,
       request: const AdRequest(),
-      size: AdSize.banner,
+      size: AdSize.largeBanner,
       listener: BannerAdListener(
         onAdLoaded: (_) {
           if (mounted) setState(() => _isLoaded = true);
@@ -54,19 +54,25 @@ class _AdBannerState extends State<AdBanner> {
   @override
   Widget build(BuildContext context) {
     final ad = _bannerAd;
+    // No reserved space until an ad actually loads — avoids blank gaps.
     if (!_isLoaded || ad == null) return const SizedBox.shrink();
-    return SafeArea(
-      top: false,
-      child: SizedBox(
-        width: double.infinity,
-        height: ad.size.height.toDouble(),
-        child: Center(
-          child: SizedBox(
-            width: ad.size.width.toDouble(),
-            height: ad.size.height.toDouble(),
-            child: AdWidget(ad: ad),
-          ),
+    final theme = Theme.of(context);
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      height: ad.size.height.toDouble(),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
         ),
+      ),
+      clipBehavior: Clip.antiAlias,
+      alignment: Alignment.center,
+      child: SizedBox(
+        width: ad.size.width.toDouble(),
+        height: ad.size.height.toDouble(),
+        child: AdWidget(ad: ad),
       ),
     );
   }

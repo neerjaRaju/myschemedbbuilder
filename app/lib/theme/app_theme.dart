@@ -29,6 +29,31 @@ class AppTheme {
 
   static const double _radius = 18;
 
+  /// Soft, diffuse card shadow used for the elevated card look.
+  static List<BoxShadow> cardShadow(Brightness brightness) {
+    if (brightness == Brightness.dark) {
+      return const [
+        BoxShadow(
+          color: Color(0x33000000),
+          blurRadius: 14,
+          offset: Offset(0, 6),
+        ),
+      ];
+    }
+    return const [
+      BoxShadow(
+        color: Color(0x14101828),
+        blurRadius: 16,
+        offset: Offset(0, 6),
+      ),
+      BoxShadow(
+        color: Color(0x0A101828),
+        blurRadius: 4,
+        offset: Offset(0, 1),
+      ),
+    ];
+  }
+
   static ThemeData light() => _build(Brightness.light);
 
   static ThemeData dark() => _build(Brightness.dark);
@@ -60,12 +85,12 @@ class AppTheme {
         ),
       ),
       cardTheme: CardThemeData(
-        elevation: 0,
+        elevation: 2,
         color: scheme.surface,
+        shadowColor: Colors.black.withValues(alpha: isDark ? 0.4 : 0.12),
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(_radius),
-          side: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.5)),
         ),
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       ),
