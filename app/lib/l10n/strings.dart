@@ -29,6 +29,9 @@ class S {
 
   static const Map<String, Map<String, String>> _strings = {
     'en': {
+      'adPrivacy': 'Manage ad privacy',
+      'adPrivacySubtitle': 'Change your personalized ads choice',
+      'privacyPolicy': 'Privacy Policy',
       'appSubtitle': 'Central & State Government Schemes',
       'checkNow': 'Check now',
       'centralGov': 'Central Govt',
@@ -114,6 +117,9 @@ class S {
       'skillDevelopment': 'Skill Development',
     },
     'hi': {
+      'adPrivacy': 'विज्ञापन गोपनीयता प्रबंधित करें',
+      'adPrivacySubtitle': 'अपनी वैयक्तिकृत विज्ञापन पसंद बदलें',
+      'privacyPolicy': 'गोपनीयता नीति',
       'appSubtitle': 'भारत सरकार एवं राज्य सरकार की योजनाएँ',
       'checkNow': 'अब जाँचें',
       'centralGov': 'केंद्र सरकार',
@@ -199,6 +205,9 @@ class S {
       'skillDevelopment': 'कौशल विकास',
     },
     'ta': {
+      'adPrivacy': 'விளம்பர தனியுரிமையை நிர்வகிக்கவும்',
+      'adPrivacySubtitle': 'தனிப்பயன் விளம்பர விருப்பத்தை மாற்றவும்',
+      'privacyPolicy': 'தனியுரிமைக் கொள்கை',
       'appSubtitle': 'மத்திய & மாநில அரசு திட்டங்கள்',
       'checkNow': 'இப்போது சரிபார்க்கவும்',
       'centralGov': 'மத்திய அரசு',
@@ -284,6 +293,9 @@ class S {
       'skillDevelopment': 'திறன் மேம்பாடு',
     },
     'te': {
+      'adPrivacy': 'ప్రకటన గోప్యతను నిర్వహించండి',
+      'adPrivacySubtitle': 'మీ వ్యక్తిగతీకరించిన ప్రకటనల ఎంపికను మార్చండి',
+      'privacyPolicy': 'గోప్యతా విధానం',
       'appSubtitle': 'కేంద్ర & రాష్ట్ర ప్రభుత్వ పథకాలు',
       'checkNow': 'ఇప్పుడే తనిఖీ చేయండి',
       'centralGov': 'కేంద్ర ప్రభుత్వం',
@@ -369,6 +381,9 @@ class S {
       'skillDevelopment': 'నైపుణ్యాభివృద్ధి',
     },
     'mr': {
+      'adPrivacy': 'जाहिरात गोपनीयता व्यवस्थापित करा',
+      'adPrivacySubtitle': 'तुमची वैयक्तिक जाहिरात निवड बदला',
+      'privacyPolicy': 'गोपनीयता धोरण',
       'appSubtitle': 'केंद्र व राज्य सरकारच्या योजना',
       'checkNow': 'आता तपासा',
       'centralGov': 'केंद्र सरकार',
@@ -454,6 +469,9 @@ class S {
       'skillDevelopment': 'कौशल्य विकास',
     },
     'bn': {
+      'adPrivacy': 'বিজ্ঞাপন গোপনীয়তা পরিচালনা করুন',
+      'adPrivacySubtitle': 'আপনার ব্যক্তিগতকৃত বিজ্ঞাপন পছন্দ পরিবর্তন করুন',
+      'privacyPolicy': 'গোপনীয়তা নীতি',
       'appSubtitle': 'কেন্দ্রীয় ও রাজ্য সরকারের প্রকল্প',
       'checkNow': 'এখনই যাচাই করুন',
       'centralGov': 'কেন্দ্রীয় সরকার',
@@ -539,6 +557,9 @@ class S {
       'skillDevelopment': 'দক্ষতা উন্নয়ন',
     },
     'gu': {
+      'adPrivacy': 'જાહેરાત ગોપનીયતા સંચાલિત કરો',
+      'adPrivacySubtitle': 'તમારી વ્યક્તિગત જાહેરાત પસંદગી બદલો',
+      'privacyPolicy': 'ગોપનીયતા નીતિ',
       'appSubtitle': 'કેન્દ્ર અને રાજ્ય સરકારની યોજનાઓ',
       'checkNow': 'હમણાં તપાસો',
       'centralGov': 'કેન્દ્ર સરકાર',
@@ -624,6 +645,9 @@ class S {
       'skillDevelopment': 'કૌશલ્ય વિકાસ',
     },
     'kn': {
+      'adPrivacy': 'ಜಾಹೀರಾತು ಗೌಪ್ಯತೆ ನಿರ್ವಹಿಸಿ',
+      'adPrivacySubtitle': 'ನಿಮ್ಮ ವೈಯಕ್ತಿಕ ಜಾಹೀರಾತು ಆಯ್ಕೆ ಬದಲಾಯಿಸಿ',
+      'privacyPolicy': 'ಗೌಪ್ಯತಾ ನೀತಿ',
       'appSubtitle': 'ಕೇಂದ್ರ ಮತ್ತು ರಾಜ್ಯ ಸರ್ಕಾರದ ಯೋಜನೆಗಳು',
       'checkNow': 'ಈಗ ಪರಿಶೀಲಿಸಿ',
       'centralGov': 'ಕೇಂದ್ರ ಸರ್ಕಾರ',
@@ -709,6 +733,9 @@ class S {
       'skillDevelopment': 'ಕೌಶಲ್ಯಾಭಿವೃದ್ಧಿ',
     },
     'ml': {
+      'adPrivacy': 'പരസ്യ സ്വകാര്യത കൈകാര്യം ചെയ്യുക',
+      'adPrivacySubtitle': 'നിങ്ങളുടെ വ്യക്തിഗത പരസ്യ തിരഞ്ഞെടുപ്പ് മാറ്റുക',
+      'privacyPolicy': 'സ്വകാര്യതാ നയം',
       'appSubtitle': 'കേന്ദ്ര-സംസ്ഥാന സർക്കാർ പദ്ധതികൾ',
       'checkNow': 'ഇപ്പോൾ പരിശോധിക്കുക',
       'centralGov': 'കേന്ദ്ര സർക്കാർ',
@@ -794,6 +821,9 @@ class S {
       'skillDevelopment': 'നൈപുണ്യ വികസനം',
     },
     'pa': {
+      'adPrivacy': 'ਵਿਗਿਆਪਨ ਗੋਪਨੀਯਤਾ ਪ੍ਰਬੰਧਿਤ ਕਰੋ',
+      'adPrivacySubtitle': 'ਆਪਣੀ ਵਿਅਕਤੀਗਤ ਵਿਗਿਆਪਨ ਚੋਣ ਬਦਲੋ',
+      'privacyPolicy': 'ਗੋਪਨੀਯਤਾ ਨੀਤੀ',
       'appSubtitle': 'ਕੇਂਦਰ ਅਤੇ ਰਾਜ ਸਰਕਾਰ ਦੀਆਂ ਯੋਜਨਾਵਾਂ',
       'checkNow': 'ਹੁਣੇ ਜਾਂਚੋ',
       'centralGov': 'ਕੇਂਦਰ ਸਰਕਾਰ',
@@ -879,6 +909,9 @@ class S {
       'skillDevelopment': 'ਹੁਨਰ ਵਿਕਾਸ',
     },
     'or': {
+      'adPrivacy': 'ବିଜ୍ଞାପନ ଗୋପନୀୟତା ପରିଚାଳନା କରନ୍ତୁ',
+      'adPrivacySubtitle': 'ଆପଣଙ୍କ ବ୍ୟକ୍ତିଗତ ବିଜ୍ଞାପନ ପସନ୍ଦ ବଦଳାନ୍ତୁ',
+      'privacyPolicy': 'ଗୋପନୀୟତା ନୀତି',
       'appSubtitle': 'କେନ୍ଦ୍ର ଓ ରାଜ୍ୟ ସରକାରଙ୍କ ଯୋଜନା',
       'checkNow': 'ବର୍ତ୍ତମାନ ଯାଞ୍ଚ କରନ୍ତୁ',
       'centralGov': 'କେନ୍ଦ୍ର ସରକାର',

@@ -1,12 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../ads/ads_service.dart';
+import '../ads/consent_manager.dart';
 import '../app_state.dart';
 import '../l10n/strings.dart';
 
-/// Language selection and database refresh.
-class SettingsScreen extends StatelessWidget {
+/// Language selection, database refresh, ad privacy and legal links.
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  bool _privacyOptionsRequired = false;
+
+  @override
+  void initState() {
+    super.initState();
+    ConsentManager.isPrivacyOptionsRequired().then((required) {
+      if (mounted) setState(() => _privacyOptionsRequired = required);
+    }).catchError((_) => false);
+  }
+
+  /// Replace with your hosted privacy policy URL (required by Play + AdMob).
+  static const String _privacyPolicyUrl =
+      'https://neerjaRaju.github.io/myschemedbbuilder/privacy.html';
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +73,25 @@ class SettingsScreen extends StatelessWidget {
                 );
               }
             },
+          ),
+          const Divider(),
+          if (_privacyOptionsRequired)
+            ListTile(
+              leading: const Icon(Icons.privacy_tip_outlined),
+              title: Text(s.get('adPrivacy')),
+              subtitle: Text(s.get('adPrivacySubtitle')),
+              onTap: () async {
+                await ConsentManager.showPrivacyOptionsForm();
+                await AdsService.instance.refreshConsent();
+              },
+            ),
+          ListTile(
+            leading: const Icon(Icons.policy_outlined),
+            title: Text(s.get('privacyPolicy')),
+            onTap: () => launchUrl(
+              Uri.parse(_privacyPolicyUrl),
+              mode: LaunchMode.externalApplication,
+            ),
           ),
         ],
       ),
