@@ -20,8 +20,8 @@ class BookmarksScreen extends StatelessWidget {
       appBar: AppBar(title: Text(s.get('bookmarks'))),
       body: schemes.isEmpty
           ? Center(child: Text(s.get('noResults')))
-          :SafeArea(
-        child: ListView.builder(
+          : SafeArea(
+              child: ListView.builder(
               itemCount: schemes.length,
               itemBuilder: (context, index) => SchemeCard(
                 scheme: schemes[index],

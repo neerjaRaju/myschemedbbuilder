@@ -30,9 +30,8 @@ class SchemeDetailScreen extends StatelessWidget {
     final bookmarked = state.isBookmarked(scheme.id);
 
     return Scaffold(
-      body:SafeArea(
-        child:
-        CustomScrollView(
+      body: SafeArea(
+          child: CustomScrollView(
         slivers: [
           SliverAppBar.large(
             title: Text(scheme.title),
@@ -202,8 +201,7 @@ class SchemeDetailScreen extends StatelessWidget {
             ),
           ),
         ],
-      )
-      ),
+      )),
     );
   }
 

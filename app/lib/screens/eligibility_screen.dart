@@ -30,7 +30,8 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
       context.read<AppState>().store.eligibilityProfile,
     );
     _ageController = TextEditingController(text: saved.age?.toString() ?? '');
-    _incomeController = TextEditingController(text: saved.annualIncome?.toString() ?? '');
+    _incomeController =
+        TextEditingController(text: saved.annualIncome?.toString() ?? '');
     _gender = saved.gender;
     _state = saved.state;
     _occupation = saved.occupation;
@@ -64,7 +65,8 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
     final result = EligibilityChecker.run(all, profile);
 
     if (!mounted) return;
-    final message = s.get('eligibleCount').replaceAll('{count}', '${result.count}');
+    final message =
+        s.get('eligibleCount').replaceAll('{count}', '${result.count}');
     await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
@@ -140,7 +142,8 @@ class _EligibilityScreenState extends State<EligibilityScreen> {
             ),
             items: [
               DropdownMenuItem(value: '', child: Text(s.get('any'))),
-              for (final st in states) DropdownMenuItem(value: st, child: Text(st)),
+              for (final st in states)
+                DropdownMenuItem(value: st, child: Text(st)),
             ],
             onChanged: (v) => setState(() => _state = v ?? ''),
           ),

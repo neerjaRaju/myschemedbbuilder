@@ -64,7 +64,9 @@ class _SearchScreenState extends State<SearchScreen> {
       body: _results.isEmpty
           ? Center(
               child: Text(
-                _controller.text.isEmpty ? s.get('searchHint') : s.get('noResults'),
+                _controller.text.isEmpty
+                    ? s.get('searchHint')
+                    : s.get('noResults'),
               ),
             )
           : SafeArea(
