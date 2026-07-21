@@ -3,15 +3,10 @@ import 'package:flutter/material.dart';
 import '../l10n/strings.dart';
 import '../models/scheme.dart';
 import '../screens/scheme_detail_screen.dart';
+import '../theme/app_theme.dart';
 
-/// Pastel accent palette cycled across cards, echoing the design's mint /
-/// blue / orange / violet tints.
-const List<(Color, Color)> _accents = [
-  (Color(0xFFE8F6EE), Color(0xFF1E8E5A)), // mint
-  (Color(0xFFE9F1FE), Color(0xFF2867D1)), // blue
-  (Color(0xFFFFF2E3), Color(0xFFD97B1C)), // orange
-  (Color(0xFFF0EBFD), Color(0xFF6C4DF0)), // violet
-];
+/// Pastel accent palette cycled across cards (from the app design tokens).
+const List<(Color, Color)> _accents = AppTheme.cardAccents;
 
 IconData _iconFor(Scheme scheme) {
   final blob = scheme.searchBlob;
@@ -58,7 +53,7 @@ class SchemeRail extends StatelessWidget {
     required this.title,
     required this.schemes,
     this.icon = Icons.star,
-    this.iconColor = const Color(0xFF6C4DF0),
+    this.iconColor = AppTheme.accentTeal,
     this.onViewAll,
   });
 

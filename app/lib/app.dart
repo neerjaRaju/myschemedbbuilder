@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'app_state.dart';
 import 'l10n/strings.dart';
 import 'screens/home_screen.dart';
+import 'theme/app_theme.dart';
 
 class SchemeApp extends StatelessWidget {
   const SchemeApp({super.key});
@@ -14,7 +14,6 @@ class SchemeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<AppState>();
-    const seedColor = Color(0xFF6C4DF0);
     return MaterialApp(
       title: 'My Schemes',
       debugShowCheckedModeBanner: false,
@@ -28,20 +27,8 @@ class SchemeApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: seedColor),
-        scaffoldBackgroundColor: const Color(0xFFF5F3FC),
-        textTheme: GoogleFonts.poppinsTextTheme(),
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: seedColor,
-          brightness: Brightness.dark,
-        ),
-        textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
       themeMode: ThemeMode.system,
       builder: (context, child) {
         final isDark =

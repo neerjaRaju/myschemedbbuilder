@@ -7,6 +7,7 @@ import '../data/connectivity_service.dart';
 import '../l10n/strings.dart';
 import '../logic/categories.dart';
 import '../models/scheme.dart';
+import '../theme/app_theme.dart';
 import '../widgets/ad_banner.dart';
 import '../widgets/scheme_rail.dart';
 import 'bookmarks_screen.dart';
@@ -217,7 +218,7 @@ class _HomeTab extends StatelessWidget {
                     title: s.get('featured'),
                     schemes: repo.featured(),
                     icon: Icons.workspace_premium,
-                    iconColor: const Color(0xFF6C4DF0),
+                    iconColor: AppTheme.accentTeal,
                     onViewAll: () => _openResults(
                       context,
                       s.get('featured'),
@@ -228,7 +229,7 @@ class _HomeTab extends StatelessWidget {
                     title: s.get('trending'),
                     schemes: repo.trending(),
                     icon: Icons.star,
-                    iconColor: const Color(0xFFF2A93B),
+                    iconColor: AppTheme.accentAmber,
                     onViewAll: () => _openResults(
                       context,
                       s.get('trending'),
@@ -239,7 +240,7 @@ class _HomeTab extends StatelessWidget {
                     title: s.get('recentlyUpdated'),
                     schemes: repo.recentlyUpdated(),
                     icon: Icons.bolt,
-                    iconColor: const Color(0xFF2E86F0),
+                    iconColor: AppTheme.accentBlue,
                     onViewAll: () => _openResults(
                       context,
                       s.get('recentlyUpdated'),
@@ -442,15 +443,19 @@ class _EligibilityBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final scheme = theme.colorScheme;
 
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 14, 16, 4),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: isDark
-              ? [const Color(0xFF2A2352), const Color(0xFF3A2E6E)]
-              : [const Color(0xFFEFE9FD), const Color(0xFFE3D9FB)],
+          colors: [
+            scheme.primaryContainer,
+            Color.alphaBlend(
+              scheme.secondaryContainer.withValues(alpha: 0.7),
+              scheme.primaryContainer,
+            ),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
