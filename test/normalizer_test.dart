@@ -96,9 +96,9 @@ void main() {
     test('strips fragments, trailing slashes and tracking params', () {
       expect(
         Normalizer.normalizeUrl(
-          'https://example.gov.in/schemes/?utm_source=x&id=2#top',
+          'https://ballapps.gov.in/schemes/?utm_source=x&id=2#top',
         ),
-        'https://example.gov.in/schemes?id=2',
+        'https://ballapps.gov.in/schemes?id=2',
       );
     });
 

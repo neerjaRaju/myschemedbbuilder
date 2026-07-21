@@ -37,7 +37,8 @@ class CompareScreen extends StatelessWidget {
             ),
         ],
       ),
-      body: Column(
+      body: SafeArea(
+          child: Column(
         children: [
           _SelectionBar(schemes: schemes, s: s),
           const Divider(height: 1),
@@ -53,7 +54,7 @@ class CompareScreen extends StatelessWidget {
                   ),
           ),
         ],
-      ),
+      )),
       floatingActionButton: schemes.length < AppState.maxCompare
           ? FloatingActionButton.extended(
               onPressed: () => Navigator.of(context).push(

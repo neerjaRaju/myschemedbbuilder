@@ -35,7 +35,7 @@ void main() {
       final errors = <String>[];
       expect(
         SchemeValidator.isValid(
-          makeScheme(officialUrl: 'ftp://example.gov.in/x'),
+          makeScheme(officialUrl: 'ftp://ballapps.gov.in/x'),
           errors,
         ),
         isFalse,

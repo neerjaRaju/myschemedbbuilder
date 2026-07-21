@@ -16,7 +16,7 @@ void main() {
           makeScheme(
             id: 'scheme-$i',
             title: 'Scheme $i',
-            officialUrl: 'https://example.gov.in/schemes/$i',
+            officialUrl: 'https://ballapps.gov.in/schemes/$i',
           ),
       ];
       db.insertSchemes(schemes, batchSize: 250);

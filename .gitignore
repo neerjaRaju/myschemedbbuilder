@@ -10,6 +10,9 @@
 data/cache/
 data/raw/
 
+android/key.properties
+android/app/upload-keystore.jks
+
 # SQLite side files (the checkpointed .db is the only distributable)
 data/output/*.db-wal
 data/output/*.db-shm

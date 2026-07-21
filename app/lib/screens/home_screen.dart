@@ -36,9 +36,7 @@ class HomeScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 CircularProgressIndicator(
-                  value: state.downloadProgress > 0
-                      ? state.downloadProgress
-                      : null,
+                  value: state.downloadProgress > 0 ? state.downloadProgress : null,
                 ),
                 const SizedBox(height: 16),
                 Text(s.get('downloading')),
@@ -148,8 +146,7 @@ class _ReadyHomeState extends State<_ReadyHome> {
               height: 68,
               backgroundColor: Theme.of(context).colorScheme.surface,
               selectedIndex: _tabIndex,
-              onDestinationSelected: (index) =>
-                  setState(() => _tabIndex = index),
+              onDestinationSelected: (index) => setState(() => _tabIndex = index),
               destinations: [
                 NavigationDestination(
                   icon: const Icon(Icons.home_outlined),
@@ -188,7 +185,8 @@ class _HomeTab extends StatelessWidget {
     final repo = state.repository;
 
     return Scaffold(
-      body: Column(
+      body: SafeArea(
+          child: Column(
         children: [
           const _OfflineBanner(),
           Expanded(
@@ -251,10 +249,7 @@ class _HomeTab extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
                     child: Text(
                       s.get('categories'),
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(fontWeight: FontWeight.w700),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
                     ),
                   ),
                   GridView.count(
@@ -269,8 +264,7 @@ class _HomeTab extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                           onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (_) =>
-                                  SchemeListScreen(categoryKey: category.key),
+                              builder: (_) => SchemeListScreen(categoryKey: category.key),
                             ),
                           ),
                           child: Column(
@@ -278,10 +272,7 @@ class _HomeTab extends StatelessWidget {
                             children: [
                               CircleAvatar(
                                 radius: 26,
-                                backgroundColor: Theme.of(context)
-                                    .colorScheme
-                                    .primaryContainer
-                                    .withValues(alpha: 0.6),
+                                backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.6),
                                 child: Icon(
                                   category.icon,
                                   color: Theme.of(context).colorScheme.primary,
@@ -305,7 +296,7 @@ class _HomeTab extends StatelessWidget {
             ),
           ),
         ],
-      ),
+      )),
     );
   }
 
@@ -352,8 +343,7 @@ class _Header extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   s.get('appSubtitle'),
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                  style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
                 ),
               ],
             ),
