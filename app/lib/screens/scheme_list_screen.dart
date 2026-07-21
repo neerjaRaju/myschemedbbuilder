@@ -44,13 +44,14 @@ class _SchemeListScreenState extends State<SchemeListScreen> {
       ),
       body: schemes.isEmpty
           ? Center(child: Text(s.get('noResults')))
-          : ListView.builder(
+          : SafeArea(
+              child: ListView.builder(
               itemCount: schemes.length,
               itemBuilder: (context, index) => SchemeCard(
                 scheme: schemes[index],
                 showCompareToggle: true,
               ),
-            ),
+            )),
     );
   }
 
@@ -99,8 +100,7 @@ class _FilterSheetState extends State<FilterSheet> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(s.get('filters'),
-                style: Theme.of(context).textTheme.titleLarge),
+            Text(s.get('filters'), style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
             SegmentedButton<SchemeLevel>(
               segments: [
@@ -118,8 +118,7 @@ class _FilterSheetState extends State<FilterSheet> {
                 ),
               ],
               selected: {f.level},
-              onSelectionChanged: (selection) =>
-                  setState(() => f.level = selection.first),
+              onSelectionChanged: (selection) => setState(() => f.level = selection.first),
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
@@ -128,8 +127,7 @@ class _FilterSheetState extends State<FilterSheet> {
               decoration: InputDecoration(labelText: s.get('state')),
               items: [
                 DropdownMenuItem(value: '', child: Text(s.get('any'))),
-                for (final st in widget.states)
-                  DropdownMenuItem(value: st, child: Text(st)),
+                for (final st in widget.states) DropdownMenuItem(value: st, child: Text(st)),
               ],
               onChanged: (v) => setState(() => f.state = v ?? ''),
             ),
